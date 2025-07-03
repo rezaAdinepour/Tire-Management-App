@@ -1,3 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tire_Management</string>
+    <string name="app_name" translatable="false">مدیریت لاستیک</string>
+    <string name="welcome_title" translatable="false">به مدیریت لاستیک خوش آمدید</string>
+    <string name="mobile_number_hint" translatable="false">شماره موبایل (مثال: ۰۹۱۲۳۴۵۶۷۸۹)</string>
+    <string name="password_hint" translatable="false">رمز عبور</string>
+    <string name="login_button" translatable="false">ورود</string>
+    <string name="register_button" translatable="false">ثبت نام</string>
+    <string name="invalid_mobile_format" translatable="false">فرمت شماره موبایل نامعتبر است.</string>
+    <string name="invalid_credentials" translatable="false">شماره موبایل یا رمز عبور نامعتبر است.</string>
+    <string name="login_successful" translatable="false">ورود موفقیت آمیز بود!</string>
+    <string name="password_empty" translatable="false">رمز عبور نمی‌تواند خالی باشد.</string>
+    <string name="mobile_already_registered" translatable="false">این شماره موبایل قبلاً ثبت نام شده است. لطفاً وارد شوید.</string>
+    <string name="registration_successful" translatable="false">ثبت نام موفقیت آمیز بود! اکنون می‌توانید وارد شوید.</string>
+    <string name="error_occurred" translatable="false">خطایی رخ داد. لطفاً دوباره تلاش کنید.</string>
+    <string name="first_name_hint" translatable="false">نام (فارسی)</string>
+    <string name="last_name_hint" translatable="false">نام خانوادگی (فارسی)</string>
+    <string name="license_plate_part1_hint" translatable="false">دو رقم اول</string>
+    <string name="license_plate_part3_hint" translatable="false">سه رقم</string>
+    <string name="license_plate_part4_hint" translatable="false">دو رقم آخر (کد استان)</string>
+    <string name="first_name_empty" translatable="false">نام نمی‌تواند خالی باشد.</string>
+    <string name="last_name_empty" translatable="false">نام خانوادگی نمی‌تواند خالی باشد.</string>
+    <string name="license_plate_empty" translatable="false">لطفاً تمام قسمت‌های پلاک را وارد کنید.</string>
+    <string name="invalid_license_plate_format" translatable="false">فرمت شماره پلاک نامعتبر است.</string>
+
+    <!-- Array for Iranian license plate letters -->
+    <string-array name="iranian_license_plate_letters">
+        <item>الف</item>
+        <item>ب</item>
+        <item>پ</item>
+        <item>ت</item>
+        <item>ث</item>
+        <item>ج</item>
+        <item>چ</item>
+        <item>ح</item>
+        <item>خ</item>
+        <item>د</item>
+        <item>ذ</item>
+        <item>ر</item>
+        <item>ز</item>
+        <item>ژ</item>
+        <item>س</item>
+        <item>ش</item>
+        <item>ص</item>
+        <item>ض</item>
+        <item>ط</item>
+        <item>ظ</item>
+        <item>ع</item>
+        <item>غ</item>
+        <item>ف</item>
+        <item>ق</item>
+        <item>ک</item>
+        <item>گ</item>
+        <item>ل</item>
+        <item>م</item>
+        <item>ن</item>
+        <item>و</item>
+        <item>ه</item>
+        <item>ی</item>
+    </string-array>
 </resources>

@@ -11,5 +11,8 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey
     val mobileNumber: String, // User's mobile number, acting as the unique username
-    val passwordHash: String // Storing password as plain text for now, but should be hashed in production
+    val passwordHash: String, // Storing password as plain text for now, but should be hashed in production
+    val firstName: String,
+    val lastName: String,
+    val licensePlate: String
 )

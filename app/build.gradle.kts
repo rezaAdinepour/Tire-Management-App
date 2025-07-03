@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.kapt") // Add this line for Room's annotation processor
+    id("org.jetbrains.kotlin.kapt") // Required for Room's annotation processor
 }
 
 android {

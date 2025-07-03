@@ -11,7 +11,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Tire Management"
+        android:text="@string/welcome_title"
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="#333333"
@@ -24,7 +24,7 @@
         android:id="@+id/et_mobile_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Mobile Number (e.g., 09123456789)"
+        android:hint="@string/mobile_number_hint"
         android:inputType="phone"
         android:maxLength="11"
         android:padding="12dp"
@@ -35,11 +35,11 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/et_first_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
+        android:hint="@string/first_name_hint"
+        android:inputType="textPersonName"
         android:padding="12dp"
         android:background="@drawable/rounded_edittext"
         android:layout_marginTop="16dp"
@@ -47,11 +47,127 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_mobile_number" />
 
+    <EditText
+        android:id="@+id/et_last_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/last_name_hint"
+        android:inputType="textPersonName"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_first_name" />
+
+    <!-- License Plate Input Layout -->
+    <LinearLayout
+        android:id="@+id/ll_license_plate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_last_name">
+
+        <!-- Part 1: Two digits -->
+        <EditText
+            android:id="@+id/et_plate_part1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:hint="@string/license_plate_part1_hint"
+            android:inputType="number"
+            android:maxLength="2"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="@drawable/rounded_edittext" />
+
+        <!-- Separator -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textSize="20sp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- Part 2: Letter Spinner -->
+        <Spinner
+            android:id="@+id/spinner_plate_letter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_edittext"
+            android:padding="8dp"
+            android:spinnerMode="dropdown" />
+
+        <!-- Separator -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textSize="20sp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- Part 3: Three digits -->
+        <EditText
+            android:id="@+id/et_plate_part3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:hint="@string/license_plate_part3_hint"
+            android:inputType="number"
+            android:maxLength="3"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="@drawable/rounded_edittext" />
+
+        <!-- Separator -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" - "
+            android:textSize="20sp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- Part 4: Two digits (Province Code) -->
+        <EditText
+            android:id="@+id/et_plate_part4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:hint="@string/license_plate_part4_hint"
+            android:inputType="number"
+            android:maxLength="2"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="@drawable/rounded_edittext" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_license_plate" />
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="@string/login_button"
         android:padding="12dp"
         android:background="@drawable/rounded_button"
         android:textColor="@android:color/white"
@@ -64,7 +180,7 @@
         android:id="@+id/btn_register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="@string/register_button"
         android:padding="12dp"
         android:background="@drawable/rounded_button_secondary"
         android:textColor="@android:color/white"

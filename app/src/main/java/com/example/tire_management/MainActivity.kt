@@ -1,4 +1,4 @@
-package com.example.tire_management // Updated to match your project name
+package com.example.tire_management
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
