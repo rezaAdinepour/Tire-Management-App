@@ -2,6 +2,7 @@ package com.example.tire_management
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable // Import Serializable
 
 /**
  * Represents a User entity in the database.
@@ -15,4 +16,4 @@ data class User(
     val firstName: String,
     val lastName: String,
     val licensePlate: String
-)
+) : Serializable // Implement Serializable

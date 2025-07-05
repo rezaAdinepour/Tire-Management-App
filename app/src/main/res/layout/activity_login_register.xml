@@ -135,18 +135,16 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp" />
 
-        <!-- Part 4: Two digits (Province Code) -->
-        <EditText
-            android:id="@+id/et_plate_part4"
+        <!-- Part 4: Province Code Spinner (formerly EditText) -->
+        <Spinner
+            android:id="@+id/spinner_plate_part4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:hint="@string/license_plate_part4_hint"
-            android:inputType="number"
-            android:maxLength="2"
-            android:gravity="center"
-            android:padding="12dp"
-            android:background="@drawable/rounded_edittext" />
+            android:background="@drawable/rounded_edittext"
+            android:padding="8dp"
+            android:spinnerMode="dropdown"
+            android:hint="@string/license_plate_part4_hint" /> <!-- Added hint to spinner for consistency -->
 
     </LinearLayout>
 

@@ -24,7 +24,7 @@ class LoginRegisterActivity : AppCompatActivity() {
     private lateinit var etPlatePart1: EditText
     private lateinit var spinnerPlateLetter: Spinner
     private lateinit var etPlatePart3: EditText
-    private lateinit var etPlatePart4: EditText
+    private lateinit var spinnerPlatePart4: Spinner
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var btnRegister: Button
@@ -49,7 +49,7 @@ class LoginRegisterActivity : AppCompatActivity() {
         etPlatePart1 = findViewById(R.id.et_plate_part1)
         spinnerPlateLetter = findViewById(R.id.spinner_plate_letter)
         etPlatePart3 = findViewById(R.id.et_plate_part3)
-        etPlatePart4 = findViewById(R.id.et_plate_part4)
+        spinnerPlatePart4 = findViewById(R.id.spinner_plate_part4)
         etPassword = findViewById(R.id.et_password)
         btnLogin = findViewById(R.id.btn_login)
         btnRegister = findViewById(R.id.btn_register)
@@ -57,20 +57,29 @@ class LoginRegisterActivity : AppCompatActivity() {
 
         // Populate the Spinner with Iranian license plate letters
         val letters = resources.getStringArray(R.array.iranian_license_plate_letters)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, letters)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerPlateLetter.adapter = adapter
+        val letterAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, letters)
+        letterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerPlateLetter.adapter = letterAdapter
+
+        // Populate the Spinner with Iranian Province Codes
+        val provinceCodes = resources.getStringArray(R.array.iranian_province_codes)
+        val provinceCodeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, provinceCodes)
+        provinceCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerPlatePart4.adapter = provinceCodeAdapter
 
         // Optional: Set a listener for spinner item selection if needed for other logic
         spinnerPlateLetter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                // You can add logic here if you need to react to letter selection
                 Log.d(TAG, "Selected letter: ${parent.getItemAtPosition(position)}")
             }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Do nothing
+        spinnerPlatePart4.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                Log.d(TAG, "Selected province code: ${parent.getItemAtPosition(position)}")
             }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         // Initialize database DAO
@@ -114,9 +123,10 @@ class LoginRegisterActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (user != null && user.passwordHash == password) {
                         tvMessage.text = getString(R.string.login_successful)
-                        Log.i(TAG, "Login successful for $mobileNumber")
-                        // Navigate to MainActivity upon successful login
+                        Log.i(TAG, "Login successful for ${user.mobileNumber}") // Log with actual user mobile
+                        // Navigate to MainActivity upon successful login, passing user data
                         val intent = Intent(this@LoginRegisterActivity, MainActivity::class.java)
+                        intent.putExtra("user_data", user) // Pass the User object
                         startActivity(intent)
                         finish() // Finish LoginRegisterActivity so user can't go back to it with back button
                     } else {
@@ -141,11 +151,11 @@ class LoginRegisterActivity : AppCompatActivity() {
         val firstName = etFirstName.text.toString().trim()
         val lastName = etLastName.text.toString().trim()
 
-        // Get license plate parts and combine them
+        // Get license plate parts from EditTexts and Spinners
         val platePart1 = etPlatePart1.text.toString().trim()
         val plateLetter = spinnerPlateLetter.selectedItem?.toString()?.trim() ?: ""
         val platePart3 = etPlatePart3.text.toString().trim()
-        val platePart4 = etPlatePart4.text.toString().trim()
+        val platePart4 = spinnerPlatePart4.selectedItem?.toString()?.trim() ?: "" // Get from Spinner
         val licensePlate = "$platePart1 $plateLetter $platePart3 - $platePart4" // Combine into format ## X ### - NN
 
         val password = etPassword.text.toString().trim()
@@ -168,8 +178,8 @@ class LoginRegisterActivity : AppCompatActivity() {
             Log.w(TAG, "Registration failed: Last name empty for $mobileNumber")
             return
         }
-        // Check if any part of the license plate is empty
-        if (platePart1.isEmpty() || plateLetter.isEmpty() || platePart3.isEmpty() || platePart4.isEmpty()) {
+        // Check if any part of the license plate is empty (spinner will always have a selection, so no need for plateLetter.isEmpty() or platePart4.isEmpty())
+        if (platePart1.isEmpty() || platePart3.isEmpty()) {
             tvMessage.text = getString(R.string.license_plate_empty)
             Log.w(TAG, "Registration failed: License plate parts empty for $mobileNumber")
             return
@@ -201,7 +211,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                         userDao.insertUser(newUser)
                         tvMessage.text = getString(R.string.registration_successful)
                         etPassword.text.clear() // Clear password after successful registration
-                        Log.i(TAG, "Registration successful for $mobileNumber. Plate: $licensePlate")
+                        Log.i(TAG, "Registration successful for ${newUser.mobileNumber}. Plate: ${newUser.licensePlate}")
                     }
                 }
             } catch (e: Exception) {
@@ -230,10 +240,7 @@ class LoginRegisterActivity : AppCompatActivity() {
      * NN: Two digits (0-9)
      */
     private fun isValidIranianLicensePlate(plate: String): Boolean {
-        // The regex now expects spaces between parts and a " - " before the last part.
-        // The individual parts' lengths are already constrained by EditText maxLength.
-        // The letter is constrained by the Spinner's options.
-        val persianLettersRegex = "[\\u0621-\\u0628\\u062A-\\u062B\\u062D-\\u063A\\u0641-\\u0642\\u0644-\\u0646\\u0640-\\u064A\\u0698\\u0686\\u06AF\\u067E]" // Added more ranges for completeness
+        val persianLettersRegex = "[\\u0621-\\u0628\\u062A-\\u062B\\u062D-\\u063A\\u0641-\\u0642\\u0644-\\u0646\\u0640-\\u064A\\u0698\\u0686\\u06AF\\u067E]"
         val regex = Regex("^\\d{2} $persianLettersRegex \\d{3} - \\d{2}$")
         return plate.matches(regex)
     }

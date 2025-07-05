@@ -4,19 +4,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- User Dashboard Section -->
+    <LinearLayout
+        android:id="@+id/user_dashboard_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Hello Android!"
-        android:textSize="24sp"
-        android:textColor="#333333"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_edittext"
         android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_title"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_mobile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#555555"
+            android:layout_marginBottom="4dp"
+            tools:text="موبایل: 09123456789" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#555555"
+            android:layout_marginBottom="4dp"
+            tools:text="نام: جان دو" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_license_plate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#555555"
+            tools:text="پلاک: 12 الف 345 - 67" />
+
+    </LinearLayout>
+
+    <!-- Product Selection Section -->
+    <LinearLayout
+        android:id="@+id/product_selection_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_edittext"
+        android:padding="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_dashboard_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_selection_title"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btn_tires"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_tires"
+            android:padding="12dp"
+            android:background="@drawable/rounded_button"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btn_tire_rings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_tire_rings"
+            android:padding="12dp"
+            android:background="@drawable/rounded_button_secondary"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

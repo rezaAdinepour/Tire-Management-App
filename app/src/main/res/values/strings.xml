@@ -17,7 +17,7 @@
     <string name="last_name_hint" translatable="false">نام خانوادگی (فارسی)</string>
     <string name="license_plate_part1_hint" translatable="false">دو رقم اول</string>
     <string name="license_plate_part3_hint" translatable="false">سه رقم</string>
-    <string name="license_plate_part4_hint" translatable="false">دو رقم آخر (کد استان)</string>
+    <string name="license_plate_part4_hint" translatable="false">کد استان</string>
     <string name="first_name_empty" translatable="false">نام نمی‌تواند خالی باشد.</string>
     <string name="last_name_empty" translatable="false">نام خانوادگی نمی‌تواند خالی باشد.</string>
     <string name="license_plate_empty" translatable="false">لطفاً تمام قسمت‌های پلاک را وارد کنید.</string>
@@ -58,4 +58,129 @@
         <item>ه</item>
         <item>ی</item>
     </string-array>
+
+    <!-- Array for Iranian Province Codes -->
+    <string-array name="iranian_province_codes">
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>81</item>
+        <item>82</item>
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>
+        <item>87</item>
+        <item>88</item>
+        <item>89</item>
+        <item>91</item>
+        <item>92</item>
+        <item>93</item>
+        <item>94</item>
+        <item>95</item>
+        <item>96</item>
+        <item>97</item>
+        <item>98</item>
+        <item>99</item>
+    </string-array>
+
+    <!-- New strings for MainActivity dashboard and product selection -->
+    <string name="dashboard_title" translatable="false">اطلاعات کاربری</string>
+    <string name="dashboard_mobile" translatable="false">موبایل: %s</string>
+    <string name="dashboard_name" translatable="false">نام: %s %s</string>
+    <string name="dashboard_license_plate" translatable="false">پلاک: %s</string>
+    <string name="product_selection_title" translatable="false">انتخاب محصول</string>
+    <string name="button_tires" translatable="false">لاستیک‌ها</string>
+    <string name="button_tire_rings" translatable="false">رینگ لاستیک</string>
+    <string name="tire_selection_title" translatable="false">صفحه انتخاب لاستیک</string>
+    <string name="tire_ring_selection_title" translatable="false">صفحه انتخاب رینگ لاستیک</string>
+
+    <!-- New strings for TireSelectionActivity -->
+    <string name="select_tire_size_brand" translatable="false">انتخاب سایز و برند لاستیک</string>
+    <string name="select_size_hint" translatable="false">انتخاب سایز</string>
+    <string name="select_brand_hint" translatable="false">انتخاب برند</string>
+    <string name="tire_images_title" translatable="false">تصاویر لاستیک</string>
+    <string name="button_buy_tire" translatable="false">کلیک برای خرید</string>
+    <string name="purchase_notification_message" translatable="false">برای خرید لاستیک %1$s با سایز %2$s با شماره %3$s تماس بگیرید.</string>
+
+    <!-- Tire Sizes -->
+    <string-array name="tire_sizes">
+        <item>185/65R15</item>
+        <item>205/55R16</item>
+        <item>225/45R17</item>
+        <item>235/40R18</item>
+        <item>245/35R19</item>
+    </string-array>
+
+    <!-- Tire Brands -->
+    <string-array name="tire_brands">
+        <item>Michelin</item>
+        <item>Goodyear</item>
+        <item>Bridgestone</item>
+        <item>Pirelli</item>
+        <item>Continental</item>
+        <item>Barum</item>
+        <item>Yazd Tire</item>
+        <item>Kian Tire</item>
+    </string-array>
+
 </resources>
+
