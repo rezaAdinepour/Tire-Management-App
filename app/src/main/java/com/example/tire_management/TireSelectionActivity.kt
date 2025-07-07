@@ -5,21 +5,23 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide // Import Glide
+import androidx.recyclerview.widget.LinearLayoutManager // Import for LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView // Import for RecyclerView
+import com.bumptech.glide.Glide // Still needed for the adapter
+import java.util.Random
 
 class TireSelectionActivity : AppCompatActivity() {
 
     private lateinit var spinnerTireSize: Spinner
     private lateinit var spinnerTireBrand: Spinner
-    private lateinit var ivTireImage1: ImageView
-    private lateinit var ivTireImage2: ImageView
-    private lateinit var ivTireImage3: ImageView
+    private lateinit var recyclerViewTireImages: RecyclerView // Changed to RecyclerView
     private lateinit var btnBuyTire: Button
     private lateinit var tvPurchaseNotification: TextView
+
+    private lateinit var tireImageAdapter: TireImageAdapter // New adapter instance
 
     private var selectedTireSize: String = ""
     private var selectedTireBrand: String = ""
@@ -29,6 +31,33 @@ class TireSelectionActivity : AppCompatActivity() {
         private const val TAG = "TireSelectionActivity"
     }
 
+    // Map to store image URLs for each brand
+    // The first URL in the list for each brand should be its logo.
+    private val brandImages: Map<String, List<String>> = mapOf(
+        "افی پلاس" to listOf(
+            "https://drive.google.com/uc?export=download&id=1HsOPl_0ZoTSYWt-9QYuNFJ1KBEOrGCoH", // effiplus.png (Logo)
+            "https://drive.google.com/uc?export=download&id=16nHLsvS6D8QmFejs_vbw1JfWOkpdRcxT", // H606.png
+            "https://drive.google.com/uc?export=download&id=1-bqIEIkA1pJm7x4dMH9w7v4YfpLJiNN9", // M698.png
+            "https://drive.google.com/uc?export=download&id=1U99r_whdPYdj1BrbppoN-8EhWdc2mXEV", // q689.png
+            "https://drive.google.com/uc?export=download&id=1LoVctEPLKXbnxyPf_OKr9C3eebvjNigq", // R107.png
+            "https://drive.google.com/uc?export=download&id=1pzHsPZ4o1sz95yZvoxN5YhuA2ePttiXH"  // R109.png
+        ),
+        "گرندستون" to listOf(
+            "https://drive.google.com/uc?export=download&id=1GHDlaz-iA4-3BDfw7a8JfIFRT7Gd_9HK", // grandstone.png (Logo)
+            "https://drive.google.com/uc?export=download&id=1xscWjpDpBmfby3KeboP6dfbf5A8c9ZXP", // GG258.png
+            "https://drive.google.com/uc?export=download&id=17hRYgaeUhhpTCBrQRlDl6NFZpG1rhuwy", // GT168.png
+            "https://drive.google.com/uc?export=download&id=1epX2UlHpnC029P3Zq7WlJbe5Ij7Spwnt", // GT169.png
+            "https://drive.google.com/uc?export=download&id=1Cy2WRLFnaiUJFSIHCS1tuyYKILUiChGS", // GT178.png
+            "https://drive.google.com/uc?export=download&id=1fMF0ld4Vb3sGnBNswY8eGWtKsdbWeUCb", // GT199.png
+            "https://drive.google.com/uc?export=download&id=1touLiTcJ8YvHtH3aUNdl6fZzn3mKCWWQ", // GT266.png
+            "https://drive.google.com/uc?export=download&id=1bsS4PrZNYUPhcbX7eJry-VIkt5098wEa"  // GT268.png
+        )
+        // Add other brands and their image URLs here as needed
+    )
+
+    // Default image for brands without specific images
+    private val defaultNoImage: String = "https://drive.google.com/uc?export=download&id=1mm8op2iNmwINvU1qdXMhgcjHV4mAzBUV" // no_image.jpeg
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tire_selection)
@@ -36,11 +65,14 @@ class TireSelectionActivity : AppCompatActivity() {
         // Initialize UI elements
         spinnerTireSize = findViewById(R.id.spinner_tire_size)
         spinnerTireBrand = findViewById(R.id.spinner_tire_brand)
-        ivTireImage1 = findViewById(R.id.iv_tire_image1)
-        ivTireImage2 = findViewById(R.id.iv_tire_image2)
-        ivTireImage3 = findViewById(R.id.iv_tire_image3)
+        recyclerViewTireImages = findViewById(R.id.recycler_view_tire_images) // Initialize RecyclerView
         btnBuyTire = findViewById(R.id.btn_buy_tire)
         tvPurchaseNotification = findViewById(R.id.tv_purchase_notification)
+
+        // Setup RecyclerView
+        recyclerViewTireImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        tireImageAdapter = TireImageAdapter(emptyList()) // Initialize adapter with empty list
+        recyclerViewTireImages.adapter = tireImageAdapter
 
         // Populate Tire Size Spinner
         val tireSizes = resources.getStringArray(R.array.tire_sizes)
@@ -55,7 +87,6 @@ class TireSelectionActivity : AppCompatActivity() {
         spinnerTireBrand.adapter = brandAdapter
 
         // Set initial selections and update images
-        // Ensure there's a default selection if the arrays are not empty
         selectedTireSize = tireSizes.firstOrNull() ?: ""
         selectedTireBrand = tireBrands.firstOrNull() ?: ""
         updateTireImages()
@@ -67,7 +98,6 @@ class TireSelectionActivity : AppCompatActivity() {
                 updateTireImages()
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Handle case where nothing is selected (e.g., set a default or show a message)
                 selectedTireSize = ""
                 updateTireImages()
             }
@@ -79,7 +109,6 @@ class TireSelectionActivity : AppCompatActivity() {
                 updateTireImages()
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Handle case where nothing is selected
                 selectedTireBrand = ""
                 updateTireImages()
             }
@@ -93,36 +122,24 @@ class TireSelectionActivity : AppCompatActivity() {
 
     /**
      * Updates the displayed tire images based on selected size and brand using Glide.
-     * Uses placeholder images for demonstration.
+     * Uses actual image URLs from Google Drive.
      */
     private fun updateTireImages() {
         // Hide previous notification when selections change
         tvPurchaseNotification.visibility = View.GONE
 
-        // Generate dynamic placeholder URLs based on selection
-        // In a real app, these would be actual image URLs from your server or local resources
-        val imageUrl1 = "https://placehold.co/300x200/4CAF50/FFFFFF?text=${selectedTireBrand}+${selectedTireSize.replace("/", "-")}-1"
-        val imageUrl2 = "https://placehold.co/300x200/2196F3/FFFFFF?text=${selectedTireBrand}+${selectedTireSize.replace("/", "-")}-2"
-        val imageUrl3 = "https://placehold.co/300x200/FF9800/FFFFFF?text=${selectedTireBrand}+${selectedTireSize.replace("/", "-")}-3"
+        val imagesForBrand = brandImages[selectedTireBrand]
+        val imagesToDisplay = mutableListOf<String>()
 
-        // Load images using Glide
-        Glide.with(this)
-            .load(imageUrl1)
-            .placeholder(R.drawable.rounded_edittext) // A simple placeholder while loading
-            .error(R.drawable.rounded_edittext) // An error image if loading fails
-            .into(ivTireImage1)
+        if (imagesForBrand != null && imagesForBrand.isNotEmpty()) {
+            imagesToDisplay.addAll(imagesForBrand)
+        } else {
+            // If no specific images for the brand, use the default placeholder
+            imagesToDisplay.add(defaultNoImage)
+        }
 
-        Glide.with(this)
-            .load(imageUrl2)
-            .placeholder(R.drawable.rounded_edittext)
-            .error(R.drawable.rounded_edittext)
-            .into(ivTireImage2)
-
-        Glide.with(this)
-            .load(imageUrl3)
-            .placeholder(R.drawable.rounded_edittext)
-            .error(R.drawable.rounded_edittext)
-            .into(ivTireImage3)
+        // Update the RecyclerView adapter with the new list of images
+        tireImageAdapter.updateImages(imagesToDisplay)
     }
 
     /**

@@ -161,26 +161,41 @@
     <string name="button_buy_tire" translatable="false">کلیک برای خرید</string>
     <string name="purchase_notification_message" translatable="false">برای خرید لاستیک %1$s با سایز %2$s با شماره %3$s تماس بگیرید.</string>
 
-    <!-- Tire Sizes -->
+    <!-- Tire Sizes from CSV -->
     <string-array name="tire_sizes">
-        <item>185/65R15</item>
-        <item>205/55R16</item>
-        <item>225/45R17</item>
-        <item>235/40R18</item>
-        <item>245/35R19</item>
+        <item>1200R24</item>
+        <item>315/80R22.5</item>
+        <item>315/70R22.5</item>
+        <item>295/80R22.5</item>
+        <item>385/65R22.5</item>
+        <item>235/75R17/5</item>
+        <item>215/75R17/5</item>
+        <item>9/5R17.5</item>
+        <item>8.25R16</item>
+        <item>7/50R16</item>
+        <item>700R16</item>
     </string-array>
 
-    <!-- Tire Brands -->
+    <!-- Tire Brands from CSV -->
     <string-array name="tire_brands">
-        <item>Michelin</item>
-        <item>Goodyear</item>
-        <item>Bridgestone</item>
-        <item>Pirelli</item>
-        <item>Continental</item>
-        <item>Barum</item>
-        <item>Yazd Tire</item>
-        <item>Kian Tire</item>
+        <item>گرندستون</item>
+        <item>یارتو</item>
+        <item>ترازانو</item>
+        <item>افی پلاس</item>
+        <item>آناهیت</item>
+        <item>سنترا</item>
+        <item>تانهال</item>
+        <item>وستلیک</item>
+        <item>رودباس</item>
+        <item>اورنت</item>
+        <item>فورلندر</item>
+        <item>مارومکس</item>
+        <item>دبل کویین</item>
+        <item>لنگیواتور</item>
+        <item>آردوزا</item>
+        <item>چ آت</item>
+        <item>میلور</item>
+        <item>ارونت</item>
     </string-array>
 
 </resources>
-
