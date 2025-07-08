@@ -22,6 +22,8 @@
         <item name="colorOnError">@color/md_theme_onError</item>
         <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
         <item name="colorOnErrorContainer">@color/md_theme_onErrorContainer</item>
+        <!-- Removed: <item name="colorSuccess">@color/md_theme_success</item> -->
+        <!-- Removed: <item name="colorOnSuccess">@color/md_theme_onSuccess</item> -->
         <!-- Background and Surface colors -->
         <item name="android:colorBackground">@color/md_theme_background</item>
         <item name="colorOnBackground">@color/md_theme_onBackground</item>
@@ -31,6 +33,7 @@
         <item name="colorOnSurfaceVariant">@color/md_theme_onSurfaceVariant</item>
         <item name="colorOutline">@color/md_theme_outline</item>
         <item name="colorOutlineVariant">@color/md_theme_outlineVariant</item>
+        <!-- Removed: <item name="colorScrim">@color/md_theme_scrim</item> -->
         <item name="colorSurfaceInverse">@color/md_theme_inverseSurface</item>
         <item name="colorOnSurfaceInverse">@color/md_theme_inverseOnSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>

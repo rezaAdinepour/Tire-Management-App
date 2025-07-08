@@ -59,14 +59,12 @@ class LoginRegisterActivity : AppCompatActivity() {
 
         // Populate the Spinner with Iranian license plate letters
         val letters = resources.getStringArray(R.array.iranian_license_plate_letters)
-        // Removed the lambda, relying on theme for text color
         val letterAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, letters)
         letterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPlateLetter.adapter = letterAdapter
 
         // Populate the Spinner with Iranian Province Codes
         val provinceCodes = resources.getStringArray(R.array.iranian_province_codes)
-        // Removed the lambda, relying on theme for text color
         val provinceCodeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, provinceCodes)
         provinceCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPlatePart4.adapter = provinceCodeAdapter
@@ -114,6 +112,7 @@ class LoginRegisterActivity : AppCompatActivity() {
         // Validate mobile number format
         if (!isValidIranianMobileNumber(mobileNumber)) {
             tvMessage.text = getString(R.string.invalid_mobile_format)
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             Log.w(TAG, "Login failed: Invalid mobile number format for $mobileNumber")
             return
         }
@@ -127,6 +126,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (user != null && user.passwordHash == password) {
                         tvMessage.text = getString(R.string.login_successful)
+                        tvMessage.setTextColor(resources.getColor(R.color.md_theme_success, theme)) // Set text color to green
                         Log.i(TAG, "Login successful for ${user.mobileNumber}")
                         // Navigate to MainActivity upon successful login, passing user data
                         val intent = Intent(this@LoginRegisterActivity, MainActivity::class.java)
@@ -135,6 +135,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                         finish() // Finish LoginRegisterActivity so user can't go back to it with back button
                     } else {
                         tvMessage.text = getString(R.string.invalid_credentials)
+                        tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
                         Log.w(TAG, "Login failed: Invalid credentials for $mobileNumber")
                     }
                 }
@@ -142,6 +143,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                 Log.e(TAG, "Error during login database operation: ${e.message}", e)
                 withContext(Dispatchers.Main) {
                     tvMessage.text = getString(R.string.error_occurred)
+                    tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
                 }
             }
         }
@@ -169,33 +171,34 @@ class LoginRegisterActivity : AppCompatActivity() {
         // Validate inputs
         if (!isValidIranianMobileNumber(mobileNumber)) {
             tvMessage.text = getString(R.string.invalid_mobile_format)
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             Log.w(TAG, "Registration failed: Invalid mobile number format for $mobileNumber")
             return
         }
         if (firstName.isEmpty()) {
             tvMessage.text = getString(R.string.first_name_empty)
-            Log.w(TAG, "Registration failed: First name empty for $mobileNumber")
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             return
         }
         if (lastName.isEmpty()) {
             tvMessage.text = getString(R.string.last_name_empty)
-            Log.w(TAG, "Registration failed: Last name empty for $mobileNumber")
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             return
         }
         // Check if any part of the license plate is empty (spinner will always have a selection, so no need for plateLetter.isEmpty() or platePart4.isEmpty())
         if (platePart1.isEmpty() || platePart3.isEmpty()) {
             tvMessage.text = getString(R.string.license_plate_empty)
-            Log.w(TAG, "Registration failed: License plate parts empty for $mobileNumber")
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             return
         }
         if (!isValidIranianLicensePlate(licensePlate)) {
             tvMessage.text = getString(R.string.invalid_license_plate_format)
-            Log.w(TAG, "Registration failed: Invalid license plate format for $mobileNumber")
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             return
         }
         if (password.isEmpty()) {
             tvMessage.text = getString(R.string.password_empty)
-            Log.w(TAG, "Registration failed: Password empty for $mobileNumber")
+            tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             return
         }
 
@@ -208,12 +211,14 @@ class LoginRegisterActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (existingUser != null) {
                         tvMessage.text = getString(R.string.mobile_already_registered)
+                        tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
                         Log.w(TAG, "Registration failed: Mobile number $mobileNumber already exists.")
                     } else {
                         // Register the new user, passing all required parameters
                         val newUser = User(mobileNumber, password, firstName, lastName, licensePlate)
                         userDao.insertUser(newUser)
                         tvMessage.text = getString(R.string.registration_successful)
+                        tvMessage.setTextColor(resources.getColor(R.color.md_theme_success, theme)) // Set text color to green
                         etPassword.text.clear() // Clear password after successful registration
                         Log.i(TAG, "Registration successful for ${newUser.mobileNumber}. Plate: ${newUser.licensePlate}")
                     }
@@ -222,6 +227,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                 Log.e(TAG, "Error during registration database operation: ${e.message}", e)
                 withContext(Dispatchers.Main) {
                     tvMessage.text = getString(R.string.error_occurred)
+                    tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
                 }
             }
         }

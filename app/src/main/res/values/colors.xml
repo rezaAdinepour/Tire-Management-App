@@ -2,13 +2,13 @@
 <resources>
     <!-- Deep Blue Palette -->
     <color name="md_theme_primary">#0047AB</color> <!-- Deep Blue -->
-    <color name="md_theme_onPrimary">#FFFFFF</color> <!-- White text on primary button -->
+    <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#D1E4FF</color>
     <color name="md_theme_onPrimaryContainer">#001C3B</color>
 
     <!-- Red Palette -->
     <color name="md_theme_secondary">#DC3545</color> <!-- Red -->
-    <color name="md_theme_onSecondary">#FFFFFF</color> <!-- White text on secondary button -->
+    <color name="md_theme_onSecondary">#FFFFFF</color>
     <color name="md_theme_secondaryContainer">#FFE4E6</color>
     <color name="md_theme_onSecondaryContainer">#410002</color>
 
@@ -24,13 +24,17 @@
     <color name="md_theme_errorContainer">#FFDAD6</color>
     <color name="md_theme_onErrorContainer">#410002</color>
 
+    <!-- Success Color -->
+    <color name="md_theme_success">#367D39</color> <!-- Green for success messages -->
+    <color name="md_theme_onSuccess">#FFFFFF</color>
+
     <!-- Background and Surface Colors (for light theme) -->
-    <color name="md_theme_background">#FFFBFE</color> <!-- Very light background -->
-    <color name="md_theme_onBackground">#1C1B1F</color> <!-- Dark text on light background -->
-    <color name="md_theme_surface">#FFFBFE</color> <!-- White surface for cards/boxes -->
-    <color name="md_theme_onSurface">#1C1B1F</color> <!-- Dark text on white surfaces -->
+    <color name="md_theme_background">#FFFBFE</color>
+    <color name="md_theme_onBackground">#1C1B1F</color>
+    <color name="md_theme_surface">#FFFBFE</color>
+    <color name="md_theme_onSurface">#1C1B1F</color>
     <color name="md_theme_surfaceVariant">#E7E0EC</color>
-    <color name="md_theme_onSurfaceVariant">#49454F</color> <!-- Darker grey for hints/less prominent text -->
+    <color name="md_theme_onSurfaceVariant">#9c9c9c</color> <!-- gray -->
     <color name="md_theme_outline">#7A757F</color>
     <color name="md_theme_inverseOnSurface">#F4EFF4</color>
     <color name="md_theme_inverseSurface">#313034</color>
