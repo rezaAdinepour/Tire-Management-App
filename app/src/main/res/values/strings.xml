@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">مدیریت لاستیک</string>
+    <string name="app_name" translatable="false">Imen Tire</string> <!-- Changed to Imen Tire -->
     <string name="welcome_title" translatable="false">به مدیریت لاستیک خوش آمدید</string>
     <string name="mobile_number_hint" translatable="false">شماره موبایل (مثال: ۰۹۱۲۳۴۵۶۷۸۹)</string>
     <string name="password_hint" translatable="false">رمز عبور</string>
@@ -12,7 +12,7 @@
     <string name="password_empty" translatable="false">رمز عبور نمی‌تواند خالی باشد.</string>
     <string name="mobile_already_registered" translatable="false">این شماره موبایل قبلاً ثبت نام شده است. لطفاً وارد شوید.</string>
     <string name="registration_successful" translatable="false">ثبت نام موفقیت آمیز بود! اکنون می‌توانید وارد شوید.</string>
-    <string name="error_occurred" translatable="false">خطایی رخ داد. لطفاً دوباره تلاش کنید.</string>
+    <string name="error_occurred" translatable="false">خطایی رخ داد. لطفmا دوباره تلاش کنید.</string>
     <string name="first_name_hint" translatable="false">نام (فارسی)</string>
     <string name="last_name_hint" translatable="false">نام خانوادگی (فارسی)</string>
     <string name="license_plate_part1_hint" translatable="false">دو رقم اول</string>
