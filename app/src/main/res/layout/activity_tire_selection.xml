@@ -26,7 +26,7 @@
                 android:text="@string/tire_selection_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="?attr/colorOnBackground"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp" />
 
@@ -37,7 +37,7 @@
                 android:text="@string/select_tire_size_brand"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="?attr/colorOnBackground"
                 android:layout_marginBottom="8dp" />
 
             <Spinner
@@ -47,7 +47,9 @@
                 android:hint="@string/select_size_hint"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:popupBackground="?attr/colorSurface"
+                android:textColor="?attr/colorOnSurface" />
 
             <Spinner
                 android:id="@+id/spinner_tire_brand"
@@ -56,7 +58,9 @@
                 android:hint="@string/select_brand_hint"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginBottom="24dp"
+                android:popupBackground="?attr/colorSurface"
+                android:textColor="?attr/colorOnSurface" />
 
             <!-- Tire Images Section (RecyclerView) -->
             <TextView
@@ -65,7 +69,7 @@
                 android:text="@string/tire_images_title"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="?attr/colorOnBackground"
                 android:layout_marginBottom="8dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -87,9 +91,8 @@
                 android:text="@string/button_buy_tire"
                 android:padding="15dp"
                 android:background="@drawable/rounded_button"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:layout_marginBottom="16dp" />
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="18sp" />
 
             <!-- Purchase Notification -->
             <TextView
@@ -97,12 +100,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="#007BFF"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:gravity="center"
                 android:padding="12dp"
                 android:background="@drawable/rounded_edittext"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_marginTop="16dp" />
 
         </LinearLayout>
     </ScrollView>

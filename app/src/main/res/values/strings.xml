@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Imen Tire</string> <!-- Changed to Imen Tire -->
-    <string name="welcome_title" translatable="false">به مدیریت لاستیک خوش آمدید</string>
+    <string name="welcome_title" translatable="false">به ایمن طایر زاگرس خوش آمدید</string> <!-- Updated welcome text -->
     <string name="mobile_number_hint" translatable="false">شماره موبایل (مثال: ۰۹۱۲۳۴۵۶۷۸۹)</string>
     <string name="password_hint" translatable="false">رمز عبور</string>
     <string name="login_button" translatable="false">ورود</string>
@@ -197,5 +197,9 @@
         <item>میلور</item>
         <item>ارونت</item>
     </string-array>
+
+    <!-- New strings for Splash Screen -->
+    <string name="powered_by" translatable="false">Powered by RA</string>
+    <string name="software_version" translatable="false">V.1.0.1</string>
 
 </resources>

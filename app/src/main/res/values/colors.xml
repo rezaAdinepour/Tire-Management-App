@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Deep Blue Palette -->
+    <color name="md_theme_primary">#0047AB</color> <!-- Deep Blue -->
+    <color name="md_theme_onPrimary">#FFFFFF</color> <!-- White text on primary button -->
+    <color name="md_theme_primaryContainer">#D1E4FF</color>
+    <color name="md_theme_onPrimaryContainer">#001C3B</color>
+
+    <!-- Red Palette -->
+    <color name="md_theme_secondary">#DC3545</color> <!-- Red -->
+    <color name="md_theme_onSecondary">#FFFFFF</color> <!-- White text on secondary button -->
+    <color name="md_theme_secondaryContainer">#FFE4E6</color>
+    <color name="md_theme_onSecondaryContainer">#410002</color>
+
+    <!-- Tertiary (optional, but good for Material Design) -->
+    <color name="md_theme_tertiary">#6750A4</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#EADDFF</color>
+    <color name="md_theme_onTertiaryContainer">#21005D</color>
+
+    <!-- Error Colors -->
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_errorContainer">#FFDAD6</color>
+    <color name="md_theme_onErrorContainer">#410002</color>
+
+    <!-- Background and Surface Colors (for light theme) -->
+    <color name="md_theme_background">#FFFBFE</color> <!-- Very light background -->
+    <color name="md_theme_onBackground">#1C1B1F</color> <!-- Dark text on light background -->
+    <color name="md_theme_surface">#FFFBFE</color> <!-- White surface for cards/boxes -->
+    <color name="md_theme_onSurface">#1C1B1F</color> <!-- Dark text on white surfaces -->
+    <color name="md_theme_surfaceVariant">#E7E0EC</color>
+    <color name="md_theme_onSurfaceVariant">#49454F</color> <!-- Darker grey for hints/less prominent text -->
+    <color name="md_theme_outline">#7A757F</color>
+    <color name="md_theme_inverseOnSurface">#F4EFF4</color>
+    <color name="md_theme_inverseSurface">#313034</color>
+    <color name="md_theme_inversePrimary">#A8C7FF</color>
+    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_surfaceTintColor">#0047AB</color>
+    <color name="md_theme_outlineVariant">#CAC4CF</color>
+    <color name="md_theme_scrim">#000000</color>
+
+    <!-- Old colors (can be removed if not used elsewhere) -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

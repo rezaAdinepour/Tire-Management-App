@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +44,7 @@ class LoginRegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login_register)
 
         // Initialize UI elements
+        val ivCompanyLogo: ImageView = findViewById(R.id.iv_company_logo)
         etMobileNumber = findViewById(R.id.et_mobile_number)
         etFirstName = findViewById(R.id.et_first_name)
         etLastName = findViewById(R.id.et_last_name)
@@ -57,12 +59,14 @@ class LoginRegisterActivity : AppCompatActivity() {
 
         // Populate the Spinner with Iranian license plate letters
         val letters = resources.getStringArray(R.array.iranian_license_plate_letters)
+        // Removed the lambda, relying on theme for text color
         val letterAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, letters)
         letterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPlateLetter.adapter = letterAdapter
 
         // Populate the Spinner with Iranian Province Codes
         val provinceCodes = resources.getStringArray(R.array.iranian_province_codes)
+        // Removed the lambda, relying on theme for text color
         val provinceCodeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, provinceCodes)
         provinceCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPlatePart4.adapter = provinceCodeAdapter
@@ -123,10 +127,10 @@ class LoginRegisterActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (user != null && user.passwordHash == password) {
                         tvMessage.text = getString(R.string.login_successful)
-                        Log.i(TAG, "Login successful for ${user.mobileNumber}") // Log with actual user mobile
+                        Log.i(TAG, "Login successful for ${user.mobileNumber}")
                         // Navigate to MainActivity upon successful login, passing user data
                         val intent = Intent(this@LoginRegisterActivity, MainActivity::class.java)
-                        intent.putExtra("user_data", user) // Pass the User object
+                        intent.putExtra("user_data", user)
                         startActivity(intent)
                         finish() // Finish LoginRegisterActivity so user can't go back to it with back button
                     } else {
@@ -155,8 +159,8 @@ class LoginRegisterActivity : AppCompatActivity() {
         val platePart1 = etPlatePart1.text.toString().trim()
         val plateLetter = spinnerPlateLetter.selectedItem?.toString()?.trim() ?: ""
         val platePart3 = etPlatePart3.text.toString().trim()
-        val platePart4 = spinnerPlatePart4.selectedItem?.toString()?.trim() ?: "" // Get from Spinner
-        val licensePlate = "$platePart1 $plateLetter $platePart3 - $platePart4" // Combine into format ## X ### - NN
+        val platePart4 = spinnerPlatePart4.selectedItem?.toString()?.trim() ?: ""
+        val licensePlate = "$platePart1 $plateLetter $platePart3 - $platePart4"
 
         val password = etPassword.text.toString().trim()
 

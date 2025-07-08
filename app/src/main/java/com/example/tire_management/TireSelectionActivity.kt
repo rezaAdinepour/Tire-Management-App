@@ -5,23 +5,24 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager // Import for LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView // Import for RecyclerView
-import com.bumptech.glide.Glide // Still needed for the adapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import java.util.Random
 
 class TireSelectionActivity : AppCompatActivity() {
 
     private lateinit var spinnerTireSize: Spinner
     private lateinit var spinnerTireBrand: Spinner
-    private lateinit var recyclerViewTireImages: RecyclerView // Changed to RecyclerView
+    private lateinit var recyclerViewTireImages: RecyclerView
     private lateinit var btnBuyTire: Button
     private lateinit var tvPurchaseNotification: TextView
 
-    private lateinit var tireImageAdapter: TireImageAdapter // New adapter instance
+    private lateinit var tireImageAdapter: TireImageAdapter
 
     private var selectedTireSize: String = ""
     private var selectedTireBrand: String = ""
@@ -65,23 +66,25 @@ class TireSelectionActivity : AppCompatActivity() {
         // Initialize UI elements
         spinnerTireSize = findViewById(R.id.spinner_tire_size)
         spinnerTireBrand = findViewById(R.id.spinner_tire_brand)
-        recyclerViewTireImages = findViewById(R.id.recycler_view_tire_images) // Initialize RecyclerView
+        recyclerViewTireImages = findViewById(R.id.recycler_view_tire_images)
         btnBuyTire = findViewById(R.id.btn_buy_tire)
         tvPurchaseNotification = findViewById(R.id.tv_purchase_notification)
 
         // Setup RecyclerView
         recyclerViewTireImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        tireImageAdapter = TireImageAdapter(emptyList()) // Initialize adapter with empty list
+        tireImageAdapter = TireImageAdapter(emptyList())
         recyclerViewTireImages.adapter = tireImageAdapter
 
         // Populate Tire Size Spinner
         val tireSizes = resources.getStringArray(R.array.tire_sizes)
+        // Removed the lambda, relying on theme for text color
         val sizeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, tireSizes)
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTireSize.adapter = sizeAdapter
 
         // Populate Tire Brand Spinner
         val tireBrands = resources.getStringArray(R.array.tire_brands)
+        // Removed the lambda, relying on theme for text color
         val brandAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, tireBrands)
         brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTireBrand.adapter = brandAdapter

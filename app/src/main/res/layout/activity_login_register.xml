@@ -7,6 +7,20 @@
     android:padding="16dp"
     tools:context=".LoginRegisterActivity">
 
+    <!-- Company Logo at Top Left -->
+    <ImageView
+        android:id="@+id/iv_company_logo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@mipmap/ic_launcher_round"
+        android:contentDescription="@string/app_name"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Removed: Theme Toggle Button -->
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -14,7 +28,7 @@
         android:text="@string/welcome_title"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#333333"
+        android:textColor="?attr/colorOnBackground"
         android:layout_marginTop="64dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +43,8 @@
         android:maxLength="11"
         android:padding="12dp"
         android:background="@drawable/rounded_edittext"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +58,8 @@
         android:inputType="textPersonName"
         android:padding="12dp"
         android:background="@drawable/rounded_edittext"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +73,8 @@
         android:inputType="textPersonName"
         android:padding="12dp"
         android:background="@drawable/rounded_edittext"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +103,9 @@
             android:maxLength="2"
             android:gravity="center"
             android:padding="12dp"
-            android:background="@drawable/rounded_edittext" />
+            android:background="@drawable/rounded_edittext"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurfaceVariant" />
 
         <!-- Separator -->
         <TextView
@@ -102,7 +124,9 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_edittext"
             android:padding="8dp"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dropdown"
+            android:popupBackground="?attr/colorSurface"
+            android:textColor="?attr/colorOnSurface" />
 
         <!-- Separator -->
         <TextView
@@ -119,12 +143,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:background="@drawable/rounded_edittext"
+            android:ellipsize="none"
+            android:gravity="center"
             android:hint="@string/license_plate_part3_hint"
             android:inputType="number"
             android:maxLength="3"
-            android:gravity="center"
             android:padding="12dp"
-            android:background="@drawable/rounded_edittext" />
+            android:scrollbarSize="4dp"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurfaceVariant"
+            android:textSize="18sp" />
 
         <!-- Separator -->
         <TextView
@@ -144,7 +173,9 @@
             android:background="@drawable/rounded_edittext"
             android:padding="8dp"
             android:spinnerMode="dropdown"
-            android:hint="@string/license_plate_part4_hint" /> <!-- Added hint to spinner for consistency -->
+            android:hint="@string/license_plate_part4_hint"
+            android:popupBackground="?attr/colorSurface"
+            android:textColor="?attr/colorOnSurface" />
 
     </LinearLayout>
 
@@ -156,6 +187,8 @@
         android:inputType="textPassword"
         android:padding="12dp"
         android:background="@drawable/rounded_edittext"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -168,7 +201,7 @@
         android:text="@string/login_button"
         android:padding="12dp"
         android:background="@drawable/rounded_button"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/colorOnPrimary"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +214,7 @@
         android:text="@string/register_button"
         android:padding="12dp"
         android:background="@drawable/rounded_button_secondary"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/colorOnSecondary"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -192,7 +225,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textColor="#FF0000"
+        android:textColor="?attr/colorError"
         android:textSize="16sp"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
