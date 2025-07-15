@@ -21,6 +21,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_tire_selection_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tire_selection_title"
@@ -32,6 +33,7 @@
 
             <!-- Size and Brand Selection -->
             <TextView
+                android:id="@+id/tv_select_tire_size_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_tire_size_brand"
@@ -64,6 +66,7 @@
 
             <!-- Tire Images Section (RecyclerView) -->
             <TextView
+                android:id="@+id/tv_tire_images_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tire_images_title"
@@ -77,11 +80,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:orientation="horizontal"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/rounded_edittext"
                 android:padding="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/image_item_layout" />
+
+            <!-- Tire Description Section -->
+            <TextView
+                android:id="@+id/tv_tire_description_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tire_description_title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnBackground"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_tire_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="24dp"
+                tools:text="این یک توضیحات نمونه برای لاستیک است." />
 
             <!-- Buy Button -->
             <Button
@@ -92,21 +117,32 @@
                 android:padding="15dp"
                 android:background="@drawable/rounded_button"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp" />
 
-            <!-- Purchase Notification -->
+            <!-- Contact Information Section -->
             <TextView
-                android:id="@+id/tv_purchase_notification"
+                android:id="@+id/tv_contact_us_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contact_us_title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnBackground"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/> <!-- Initially hidden -->
+
+            <LinearLayout
+                android:id="@+id/ll_contact_numbers_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:padding="12dp"
+                android:orientation="vertical"
                 android:background="@drawable/rounded_edittext"
-                android:visibility="gone"
-                android:layout_marginTop="16dp" />
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"> <!-- Initially hidden -->
+                <!-- Contact TextViews will be added here dynamically -->
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

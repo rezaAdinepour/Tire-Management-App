@@ -160,6 +160,9 @@
     <string name="tire_images_title" translatable="false">تصاویر لاستیک</string>
     <string name="button_buy_tire" translatable="false">کلیک برای خرید</string>
     <string name="purchase_notification_message" translatable="false">برای خرید لاستیک %1$s با سایز %2$s با شماره %3$s تماس بگیرید.</string>
+    <string name="tire_description_title" translatable="false">توضیحات لاستیک:</string>
+    <string name="no_description_available" translatable="false">توضیحاتی در دسترس نیست.</string>
+    <string name="contact_us_title" translatable="false">تماس با ما:</string> <!-- New string -->
 
     <!-- Tire Sizes from CSV -->
     <string-array name="tire_sizes">

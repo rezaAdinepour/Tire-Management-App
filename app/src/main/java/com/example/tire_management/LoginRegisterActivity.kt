@@ -172,7 +172,6 @@ class LoginRegisterActivity : AppCompatActivity() {
         if (!isValidIranianMobileNumber(mobileNumber)) {
             tvMessage.text = getString(R.string.invalid_mobile_format)
             tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
-            Log.w(TAG, "Registration failed: Invalid mobile number format for $mobileNumber")
             return
         }
         if (firstName.isEmpty()) {
@@ -197,7 +196,7 @@ class LoginRegisterActivity : AppCompatActivity() {
             return
         }
         if (password.isEmpty()) {
-            tvMessage.text = getString(R.string.password_empty)
+            tvMessage.text = getString(R.string.password_empty) // This is the line causing the error
             tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
             return
         }
@@ -210,7 +209,7 @@ class LoginRegisterActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (existingUser != null) {
-                        tvMessage.text = getString(R.string.mobile_already_registered)
+                        tvMessage.text = getString(R.string.mobile_already_registered) // This is the other line causing the error
                         tvMessage.setTextColor(resources.getColor(R.color.md_theme_error, theme)) // Set text color to red
                         Log.w(TAG, "Registration failed: Mobile number $mobileNumber already exists.")
                     } else {

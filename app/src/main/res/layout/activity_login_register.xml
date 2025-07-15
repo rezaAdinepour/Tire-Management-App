@@ -19,8 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Removed: Theme Toggle Button -->
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
