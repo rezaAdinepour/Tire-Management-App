@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <!-- Declare that the app uses telephony hardware, but it's not strictly required -->
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <application
@@ -44,15 +43,21 @@
             <!-- No intent-filter here, as it's not the launcher activity anymore -->
         </activity>
 
-        <!-- New Activity for Tire Selection -->
+        <!-- Activity for Tire Selection -->
         <activity
             android:name=".TireSelectionActivity"
             android:exported="false" />
 
-        <!-- New Activity for Tire Ring Selection -->
+        <!-- Activity for Tire Ring Selection -->
         <activity
             android:name=".TireRingSelectionActivity"
             android:exported="false" />
+
+        <!-- New Activity for Image Detail (Zoomable) -->
+        <activity
+            android:name=".ImageDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" /> <!-- Use NoActionBar for full screen image -->
 
     </application>
 </manifest>

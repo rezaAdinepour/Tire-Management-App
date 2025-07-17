@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" /> <!-- Adjust bias to move logo slightly up -->
+        app:layout_constraintVertical_bias="0.4" />
     <!-- Uses your app's round icon -->
 
     <TextView
@@ -29,6 +29,8 @@
         android:textSize="12sp"
         android:textColor="#666666"
         android:layout_marginBottom="4dp"
+        android:textDirection="rtl"
+        android:gravity="end"
         app:layout_constraintBottom_toTopOf="@id/tv_software_version"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -41,6 +43,8 @@
         android:textSize="12sp"
         android:textColor="#666666"
         android:layout_marginBottom="16dp"
+        android:textDirection="rtl"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

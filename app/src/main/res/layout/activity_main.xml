@@ -23,19 +23,19 @@
             android:id="@+id/tv_dashboard_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/dashboard_title"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="8dp" />
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_dashboard_mobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="?attr/colorOnSurface"
             android:layout_marginBottom="4dp"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp"
             tools:text="موبایل: 09123456789" />
 
         <TextView
@@ -74,11 +74,11 @@
             android:id="@+id/tv_product_selection_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/product_selection_title"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp" />
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_tires"

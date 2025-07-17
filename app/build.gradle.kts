@@ -64,4 +64,7 @@ dependencies {
 
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    // PhotoView for zoomable images - Now with JitPack
+    implementation("com.github.chrisbanes:PhotoView:2.3.0") // Keep this version for now
 }

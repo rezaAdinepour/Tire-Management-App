@@ -1,17 +1,28 @@
 package com.example.tire_management
 
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import android.util.Log
 
 /**
  * RecyclerView Adapter for displaying a list of tire images.
  */
 class TireImageAdapter(private var imageList: List<String>) :
     RecyclerView.Adapter<TireImageAdapter.ImageViewHolder>() {
+
+    private companion object {
+        private const val TAG = "TireImageAdapter"
+    }
 
     /**
      * ViewHolder for each image item in the RecyclerView.
@@ -34,11 +45,22 @@ class TireImageAdapter(private var imageList: List<String>) :
      */
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val imageUrl = imageList[position]
+        Log.d(TAG, "Attempting to load image: $imageUrl")
+
         Glide.with(holder.itemView.context)
             .load(imageUrl)
-            .placeholder(R.drawable.rounded_edittext) // Placeholder while loading
-            .error(R.drawable.rounded_edittext) // Error image if loading fails
+            .placeholder(R.drawable.rounded_edittext)
+            .error(R.drawable.rounded_edittext)
             .into(holder.imageView)
+
+        // Set OnClickListener to open ImageDetailActivity
+        holder.imageView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ImageDetailActivity::class.java).apply {
+                putExtra("image_url", imageUrl) // Pass the image URL
+            }
+            context.startActivity(intent)
+        }
     }
 
     /**
@@ -53,6 +75,7 @@ class TireImageAdapter(private var imageList: List<String>) :
      */
     fun updateImages(newImageList: List<String>) {
         imageList = newImageList
-        notifyDataSetChanged() // Notifies the adapter that the data has changed
+        notifyDataSetChanged()
+        Log.d(TAG, "Image list updated. New size: ${imageList.size}")
     }
 }
