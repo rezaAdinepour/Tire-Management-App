@@ -206,6 +206,7 @@
     <string-array name="gol_types">
         <item>جلو</item>
         <item>عقب</item>
+        <item>معدنی</item>
     </string-array>
 
     <!-- New strings for Splash Screen -->

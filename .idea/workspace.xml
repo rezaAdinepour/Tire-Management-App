@@ -54,7 +54,6 @@
     <list default="true" id="6c0e048f-5d40-4be0-91f4-16a355297a3e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/tire_management/TireSelectionActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/tire_management/TireSelectionActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_tire_selection.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_tire_selection.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assests/Tire_Images/data.json" beforeDir="false" afterPath="$PROJECT_DIR$/assests/Tire_Images/data.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assests/Tire_Images/data.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/assests/Tire_Images/data.xlsx" afterDir="false" />
