@@ -163,6 +163,7 @@
     <string name="tire_description_title" translatable="false">توضیحات لاستیک:</string>
     <string name="no_description_available" translatable="false">توضیحاتی در دسترس نیست.</string>
     <string name="contact_us_title" translatable="false">تماس با ما:</string> <!-- New string -->
+    <string name="select_gol_type_hint">انتخاب گل</string> <!-- New string -->
 
     <!-- Tire Sizes from CSV -->
     <string-array name="tire_sizes">
@@ -199,6 +200,12 @@
         <item>چ آت</item>
         <item>میلور</item>
         <item>ارونت</item>
+    </string-array>
+
+    <!-- New string array for Gol Types -->
+    <string-array name="gol_types">
+        <item>جلو</item>
+        <item>عقب</item>
     </string-array>
 
     <!-- New strings for Splash Screen -->

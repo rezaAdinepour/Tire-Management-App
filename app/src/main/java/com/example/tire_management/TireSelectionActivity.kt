@@ -1,7 +1,6 @@
 package com.example.tire_management
 
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast // Import Toast
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +28,7 @@ class TireSelectionActivity : AppCompatActivity() {
 
     private lateinit var spinnerTireSize: Spinner
     private lateinit var spinnerTireBrand: Spinner
+    private lateinit var spinnerGolType: Spinner // New Spinner for Gol Type
     private lateinit var recyclerViewTireImages: RecyclerView
     private lateinit var tvTireDescription: TextView
     private lateinit var btnBuyTire: Button
@@ -39,13 +39,16 @@ class TireSelectionActivity : AppCompatActivity() {
 
     private var selectedTireSize: String = ""
     private var selectedTireBrand: String = ""
+    private var selectedGolType: String = "" // New variable for selected Gol Type
 
     private companion object {
         private const val TAG = "TireSelectionActivity"
     }
 
+    // Updated Data structure to hold parsed tire information
+    // Map: Tire Size -> (Map: Persian Brand -> (Map: Gol Type -> List of (Image URL, Description)))
     private val tireDataMap:
-            MutableMap<String, MutableMap<String, MutableList<Pair<String, String>>>> = mutableMapOf()
+            MutableMap<String, MutableMap<String, MutableMap<String, MutableList<Pair<String, String>>>>> = mutableMapOf()
 
     private val defaultNoImage: String = "https://drive.google.com/uc?export=download&id=1mm8op2iNmwINvU1qdXMhgcjHV4mAzBUV"
 
@@ -64,6 +67,7 @@ class TireSelectionActivity : AppCompatActivity() {
 
         spinnerTireSize = findViewById(R.id.spinner_tire_size)
         spinnerTireBrand = findViewById(R.id.spinner_tire_brand)
+        spinnerGolType = findViewById(R.id.spinner_gol_type) // Initialize new Spinner
         recyclerViewTireImages = findViewById(R.id.recycler_view_tire_images)
         tvTireDescription = findViewById(R.id.tv_tire_description)
         btnBuyTire = findViewById(R.id.btn_buy_tire)
@@ -77,29 +81,32 @@ class TireSelectionActivity : AppCompatActivity() {
         tireImageAdapter = TireImageAdapter(emptyList())
         recyclerViewTireImages.adapter = tireImageAdapter
 
+        // Populate Tire Size Spinner
         val uniqueSizes = tireDataMap.keys.sorted().toTypedArray()
         Log.d(TAG, "Unique Sizes for spinner: ${uniqueSizes.contentToString()}")
         val sizeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, uniqueSizes)
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTireSize.adapter = sizeAdapter
 
-        val allBrands = tireDataMap.values.flatMap { it.keys }.toSet().sorted().toTypedArray()
-        Log.d(TAG, "All Brands for initial spinner: ${allBrands.contentToString()}")
-        val brandAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, allBrands)
-        brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerTireBrand.adapter = brandAdapter
+        // Populate Gol Type Spinner (initially with all types, will be filtered later)
+        val allGolTypes = resources.getStringArray(R.array.gol_types) // Get from strings.xml
+        val golTypeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, allGolTypes)
+        golTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerGolType.adapter = golTypeAdapter
 
+
+        // Set listeners for spinners
         spinnerTireSize.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedTireSize = parent.getItemAtPosition(position).toString()
                 Log.d(TAG, "Size selected: $selectedTireSize")
-                filterBrandsForSelectedSize()
+                filterBrandsAndGolTypes() // Filter brands and gol types based on selected size
                 updateTireDisplay()
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 selectedTireSize = ""
                 Log.d(TAG, "Nothing selected for size.")
-                filterBrandsForSelectedSize()
+                filterBrandsAndGolTypes()
                 updateTireDisplay()
             }
         }
@@ -108,20 +115,38 @@ class TireSelectionActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedTireBrand = parent.getItemAtPosition(position).toString()
                 Log.d(TAG, "Brand selected: $selectedTireBrand")
+                filterGolTypesForSelectedSizeAndBrand() // Filter gol types based on size and brand
                 updateTireDisplay()
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 selectedTireBrand = ""
                 Log.d(TAG, "Nothing selected for brand.")
+                filterGolTypesForSelectedSizeAndBrand()
                 updateTireDisplay()
             }
         }
 
+        spinnerGolType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedGolType = parent.getItemAtPosition(position).toString()
+                Log.d(TAG, "Gol Type selected: $selectedGolType")
+                updateTireDisplay() // Update images and description
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                selectedGolType = ""
+                Log.d(TAG, "Nothing selected for Gol Type.")
+                updateTireDisplay()
+            }
+        }
+
+
+        // Set initial selections and update display
         if (uniqueSizes.isNotEmpty()) {
             selectedTireSize = uniqueSizes[0]
             spinnerTireSize.setSelection(0)
             Log.d(TAG, "Initial selected size: $selectedTireSize")
-            filterBrandsForSelectedSize()
+            filterBrandsAndGolTypes() // Populate brands and gol types for the first size
+            // selectedTireBrand and selectedGolType will be set by the filtering functions
             updateTireDisplay()
         } else {
             Log.w(TAG, "No unique sizes found after parsing JSON data.")
@@ -144,154 +169,400 @@ class TireSelectionActivity : AppCompatActivity() {
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
     "لینک عکس": "https://drive.google.com/file/d/1o_L7vbS2Udeu26zC_mwCwstzcHDCoCp-/view?usp=sharing",
-    "توضیحات عکس": "گرندستون معدنی همراه با تیوپ ونوارکامل\nباگارانتی معتبر شرکتی و کارت"
+    "توضیحات عکس": "گرندستون معدنی همراه با تیوپ ونوارکامل\nباگارانتی معتبر شرکتی و کارت",
+    "گل": "جلو"
   },
   {
     "SIZE ": "1200R24",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
     "لینک عکس": "https://drive.google.com/file/d/1_tSIF2ulGVC1laOkxzX8_nnIZzVMkq-Z/view?usp=sharing",
-    "توضیحات عکس": "سوپرگرندستون گل جلو۲۲لا\nهمراه باتیوپ ونوارباوزن ۹۶کیلوگرم \n۱۰کیلوسنگین ترازلاستیک های۲۰لا\nباگارانتی ۴ساله ایمن تایرزاگروس"
+    "توضیحات عکس": "سوپرگرندستون گل جلو۲۲لا\nهمراه باتیوپ ونوارباوزن ۹۶کیلوگرم \n۱۰کیلوسنگین ترازلاستیک های۲۰لا\nباگارانتی ۴ساله ایمن تایرزاگروس",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "yartu ",
+    "برند ": "یارتو ",
+    "لینک عکس": "https://drive.google.com/file/d/1SS3QPVhHErMth7ZS45sxBvaVHIFNrNm9/view?usp=sharing",
+    "توضیحات عکس": "یارتوو گل جلو  ( زد سی رابر )  با تیوپ ونوارکامل \n\nباگارانتی معتبر شرکتی ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "TRAZANO",
+    "برند ": "ترازانو ",
+    "لینک عکس": "https://drive.google.com/file/d/1mZKs9Y5noQniotSHnw2VtkEtELkLQUDD/view?usp=sharing",
+    "توضیحات عکس": "ترازانو  معدنی ( زد سی رابر )  با تیوپ ونوارکامل \nباگارانتی معتبر شرکتی \n",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "TRAZANO",
+    "برند ": "ترازانو ",
+    "لینک عکس": "https://drive.google.com/file/d/1jEbgcRuTKICjam28chycDPhenlW5zaRL/view?usp=sharing",
+    "توضیحات عکس": "ترازانو گل جلو ( ۲۰ لا ) گل بریجستونی   همراه با تیوپ ونوارکامل \nباگارانتی",
+    "گل": "جلو"
   },
   {
     "SIZE ": "1200R24",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
     "لینک عکس": "https://drive.google.com/file/d/16qh3QE5TBuyuJPZ6cwQVJlnINVc2yK3r/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس گل کامل معدنی ۲۴ لا ‌با عرض ۲۶ سانتیمتر ۲ سانتیمتر پهن تر از همه لاستیک های چینی ووزن ۱۱۰ کیلوگرم برای دستگاههایی که تا 38تن بارحمل می کنند\nهمراه با تیوپ ونوار کامل باگارانتی ۵ ساله شرکت ایمن تایر زاگرس\nقابل مقایسه با هیچ برندچینی نمی باشد."
+    "توضیحات عکس": "افی پلاس گل کامل معدنی ۲۴ لا ‌با عرض ۲۶ سانتیمتر ۲ سانتیمتر پهن تر از همه لاستیک های چینی ووزن ۱۱۰ کیلوگرم برای دستگاههایی که تا 38تن بارحمل می کنند\nهمراه با تیوپ ونوار کامل باگارانتی ۵ ساله شرکت ایمن تایر زاگرس\nقابل مقایسه با هیچ برندچینی نمی باشد.",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "ANAIT ",
+    "برند ": "آناهیت ",
+    "لینک عکس": "https://drive.google.com/file/d/1fDXqasUe4Ip8pf8Z5Ima9f6rANSMTAaz/view?usp=sharing",
+    "توضیحات عکس": "آنایت گل جلو ( اوفاین ) \n( ۲۰ لا )  همراه با تیوپ ونوارکامل \nباگارانتی۴ساله معتبر شرکتی ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "CENTRA ",
+    "برند ": "سنترا ",
+    "لینک عکس": "https://drive.google.com/file/d/1P_Hv48oswajh0VhWPOl5OYk0Iw-36Xvh/view?usp=sharing",
+    "توضیحات عکس": "سنتارا گل جلو ( ۲۰ لا )  همراه با تیوپ ونوارکامل  \nباگارانتی۴ساله",
+    "گل": "جلو"
   },
   {
     "SIZE ": "1200R24",
     "BRAND ": "TOWNHALL",
     "برند ": "تانهال ",
     "لینک عکس": "https://drive.google.com/file/d/1jxEEQ9OyLyn-1QcJ72ffkf6dLMiaNjn_/view?usp=sharing",
-    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی در این کارخانه  همراه باتیوپ ونوارکامل معدنی باگارانتی ۴ساله شرکت ایمن طایر زاگرس "
+    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی در این کارخانه  همراه باتیوپ ونوارکامل معدنی باگارانتی ۴ساله شرکت ایمن طایر زاگرس ",
+    "گل": "جلو"
   },
   {
     "SIZE ": "1200R24",
     "BRAND ": "TOWNHALL",
     "برند ": "تانهال ",
     "لینک عکس": "https://drive.google.com/file/d/1kpwHU1RqdWSF40TgE2GL9doKtjwGcrVy/view?usp=sharing",
-    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nگل جلو بریجستونی \nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی دراین کارخانه همراه باتیوپ ونوارکامل چهارخط‌ با گارانتی ۴ساله شرکت ایمن طایر زاگرس "
+    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nگل جلو بریجستونی \nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی دراین کارخانه همراه باتیوپ ونوارکامل چهارخط‌ با گارانتی ۴ساله شرکت ایمن طایر زاگرس ",
+    "گل": "جلو"
   },
   {
     "SIZE ": "1200R24",
     "BRAND ": "TOWNHALL",
     "برند ": "تانهال ",
     "لینک عکس": "https://drive.google.com/file/d/18mds_UkBROqRMp9TPNR10OXC3GzNYU9X/view?usp=sharing",
-    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nگل جلو آپولویی\nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی دراین کارخانه  همراه باتیوپ ونوارکامل چهارخط‌ با گارانتی ۴ساله شرکت ایمن طایر زاگرس \n"
+    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nگل جلو آپولویی\nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی دراین کارخانه  همراه باتیوپ ونوارکامل چهارخط‌ با گارانتی ۴ساله شرکت ایمن طایر زاگرس \n",
+    "گل": "جلو"
   },
   {
     "SIZE ": "1200R24",
     "BRAND ": "TOWNHALL",
     "برند ": "تانهال ",
     "لینک عکس": "https://drive.google.com/file/d/1C0gr0RWYSu1e3aNYgMBMCOy0hWXJTwS3/view?usp=sharing",
-    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nگل جلو چهارخط \nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی دراین کارخانه همراه باتیوپ ونوارکامل چهارخط‌ با گارانتی ۴ساله شرکت ایمن طایر زاگرس \n"
+    "توضیحات عکس": "تانهال (برنداروپایی کارخانه ووسن)\nگل جلو چهارخط \nساخت کشور چین‌ بابالاترین وزن وکیفیت نسبت به برندهای تولیدی دراین کارخانه همراه باتیوپ ونوارکامل چهارخط‌ با گارانتی ۴ساله شرکت ایمن طایر زاگرس \n",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "WESTLAKE ",
+    "برند ": "وستلیک ",
+    "لینک عکس": "https://drive.google.com/file/d/1uy0CSnbvXD3e93GzU-vcgW_eBr880Bnj/view?usp=sharing",
+    "توضیحات عکس": "وست لیک   ( ۲۰ لا ) گل عقب شهری  ( بهترین برند چینی بازار تولید زد سی رابر ) \nهمراه با تیوب و نوار کامل \nباگارانتی۴ ساله\n",
+    "گل": "عقب"
+  },
+  {
+    "SIZE ": "1200R24",
+    "BRAND ": "Landspider",
+    "برند ": "لنداسپایدر",
+    "لینک عکس": "https://drive.google.com/file/d/1NfTwk2cTw90brOx1guSVJ7OIq9BycwqQ/view?usp=sharing",
+    "توضیحات عکس": "لنداسپایدر  گل معدنی  ( ۲۴ لایه )  با تیوپ ونوارکامل \n\nباگارانتی معتبر شرکتی ",
+    "گل": "جلو"
   },
   {
     "SIZE ": "315/80R22.5",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
     "لینک عکس": "https://drive.google.com/file/d/1gV1XaTIOtu81b_NzjSQ8_OPcBQDJuzmv/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس (تکینگ) ۲۰ لا \nبرند معتبر دنیا ساخت کشورچین باعرض۲۸سانتیمتر گل عقب مناسب برای ماشین های باری وکمپرسی ومیکسر وتریلی عمق اج و وزن ۲۰درصدبالاترازهمه برندهای موجود دربازار \nباگارانتی۴ساله ایمن طایر زاگرس \n"
+    "توضیحات عکس": "افی پلاس (تکینگ) ۲۰ لا \nبرند معتبر دنیا ساخت کشورچین باعرض۲۸سانتیمتر گل عقب مناسب برای ماشین های باری وکمپرسی ومیکسر وتریلی عمق اج و وزن ۲۰درصدبالاترازهمه برندهای موجود دربازار \nباگارانتی۴ساله ایمن طایر زاگرس \n",
+    "گل": "عقب"
   },
   {
     "SIZE ": "315/80R22.5",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
-    "لینک عکس": "https://drive.google.com/file/d/1vxXiddYynrqbm6dMkmf5H2lZk2qtyna/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس گل عقب۲۲لا بهترین برند چینی و غیر قابل مقایسه با همه برند های چینی با وزن ۷۵کیلو گرم \nبا عرض ۲۸ سانت \n  با کارکرد بسیار بالا با گارانتی ۵ساله شرکت ایمن طایر زاگرس"
+    "لینک عکس": "https://drive.google.com/file/d/1vxXiddYynrqbm6dMkmfF5H2lZk2qtyna/view?usp=sharing",
+    "توضیحات عکس": "افی پلاس گل عقب۲۲لا بهترین برند چینی و غیر قابل مقایسه با همه برند های چینی با وزن ۷۵کیلو گرم \nبا عرض ۲۸ سانت \n  با کارکرد بسیار بالا با گارانتی ۵ساله شرکت ایمن طایر زاگرس",
+    "گل": "عقب"
   },
   {
     "SIZE ": "315/80R22.5",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
     "لینک عکس": "https://drive.google.com/file/d/1Eoyx2XMVIdBJZ18EDL4NQu5cWFvdkOJ-/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس گل جلو۲۲لا بهترین برند چینی و غیر قابل مقایسه با همه برند های چینی با وزن ۷۳کیلو گرم\nبا عرض ۲۷ سانت \n  با کارکرد بسیار بالا با گارانتی ۵ساله شرکت ایمن طایر زاگرس \n"
+    "توضیحات عکس": "افی پلاس گل جلو۲۲لا بهترین برند چینی و غیر قابل مقایسه با همه برند های چینی با وزن ۷۳کیلو گرم\nبا عرض ۲۷ سانت \n  با کارکرد بسیار بالا با گارانتی ۵ساله شرکت ایمن طایر زاگرس \n",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "yartu ",
+    "برند ": "یارتو ",
+    "لینک عکس": "https://drive.google.com/file/d/1hAeXuGXbNth2QRgSG4g7tM5bQfD7cD6R/view?usp=sharing",
+    "توضیحات عکس": "یارتوو  گل عقب  ( زد سی رابر ) \nساخت‌ کشور چین  گل عقب   \n با پهنای ۲۸ سانت  با ۴ سال گارانتی معتبر شرکتی ",
+    "گل": "عقب"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "yartu ",
+    "برند ": "یارتو ",
+    "لینک عکس": "https://drive.google.com/file/d/1EjF6P5RcfPv2QCxFifg5DkS25dhDAayW/view?usp=sharing",
+    "توضیحات عکس": "یارتوو   گل جلو \nساخت‌ کشور چین  گل جلو   با پهنای ۲۸ سانت  با ۴ سال گارانتی معتبر شرکتی ",
+    "گل": "جلو"
   },
   {
     "SIZE ": "315/80R22.5",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
     "لینک عکس": "https://drive.google.com/file/d/1_tK8lCsyZCbY_q2xZ1r2fVB5yFiHL26i/view?usp=sharing",
-    "توضیحات عکس": "گل معدنی  ساخت کشور چین \nاز بهترین برندهای  موجود در ایران \n  باگارانتی ۴ساله شرکت ایمن تایر زاگرس"
+    "توضیحات عکس": "گل معدنی  ساخت کشور چین \nاز بهترین برندهای  موجود در ایران \n  باگارانتی ۴ساله شرکت ایمن تایر زاگرس",
+    "گل": "جلو"
   },
   {
     "SIZE ": "315/80R22.5",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
     "لینک عکس": "https://drive.google.com/file/d/1XfMT8cKtROl53JrgLyQCxm77O6px0-cI/view?usp=sharing",
-    "توضیحات عکس": "گرندستون گل عقب   ساخت کشور چین \nاز بهترین برندهای  موجود در ایران \n  باگارانتی ۴ساله شرکت ایمن تایر زاگرس"
+    "توضیحات عکس": "گرندستون گل عقب   ساخت کشور چین \nاز بهترین برندهای  موجود در ایران \n  باگارانتی ۴ساله شرکت ایمن تایر زاگرس",
+    "گل": "عقب"
   },
   {
     "SIZE ": "315/80R22.5",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
     "لینک عکس": "https://drive.google.com/file/d/1CxY1IhoStI0kmb1kC-MHu9f4kpuS6sJI/view?usp=sharing",
-    "توضیحات عکس": "گرندستون گل جلو ساخت کشور چین \nاز بهترین برندهای  موجود در ایران \n باگارانتی ۴ساله شرکت ایمن تایر زاگرس"
+    "توضیحات عکس": "گرندستون گل جلو ساخت کشور چین \nاز بهترین برندهای  موجود در ایران \n باگارانتی ۴ساله شرکت ایمن تایر زاگرس",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "ROADBOSS",
+    "برند ": "رودباس ",
+    "لینک عکس": "https://drive.google.com/file/d/14oD335PAsQ6DNHcw33a0F69_RxjD7wQq/view?usp=sharing",
+    "توضیحات عکس": "رودباس     گل جلو \nساخت‌ کشور چین\n  گل جلو   با پهنای ۲۸ سانت  با ۴ سال گارانتی معتبر شرکتی ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "ORNET ",
+    "برند ": "اورنت ",
+    "لینک عکس": "https://drive.google.com/file/d/1lGFuDpvKb8YCCjw9aoljnjFPCYLK59Th/view?usp=sharing",
+    "توضیحات عکس": "اورنت‌ هندوستان ساخت کشور چین \nگل عقب باعرض ۲۶ سانتیمتر\nباگارانتی شرکت ایمن تایرزاگرس  ",
+    "گل": "عقب"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "ORNET ",
+    "برند ": "اورنت ",
+    "لینک عکس": "https://drive.google.com/file/d/1CUr244bvT4oNCfM-ihb1xEwV5CMqMiq5/view?usp=sharing",
+    "توضیحات عکس": "اورنت‌ هندوستان ساخت کشور چین \nگل جلو باعرض ۲۶ سانتیمتر\nباگارانتی شرکت ایمن تایرزاگرس  ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "ANAIT ",
+    "برند ": "آناهیت ",
+    "لینک عکس": "https://drive.google.com/file/d/1tfuOrA0UjL2Ox7i3zPmqZet6NVDsLkMF/view?usp=sharing",
+    "توضیحات عکس": "آنایت گل جلو  ( اوفاین ) \nساخت‌ کشور چین\n  گل جلو  \nبا ۴ سال گارانتی معتبر شرکتی ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "FORLANDER",
+    "برند ": "فورلندر ",
+    "لینک عکس": "https://drive.google.com/file/d/1yisMIPRddahELzdUpQPrsewbhL1R3MbA/view?usp=sharing",
+    "توضیحات عکس": "فورلندر    گل عقب\nساخت‌ کشور چین\n  گل عقب با پهنای ۲۸ سانت  با ۴ سال گارانتی معتبر شرکتی",
+    "گل": "عقب"
+  },
+  {
+    "SIZE ": "315/80R22.5",
+    "BRAND ": "MARVMAX",
+    "برند ": "مارومکس ",
+    "لینک عکس": "https://drive.google.com/file/d/1iYr8ih2jMN12Xt7Intjkay7R6U1HNiWD/view?usp=sharing",
+    "توضیحات عکس": "مارومکس  گل عقب \nساخت‌ کشور چین\n  با ۴ سال گارانتی معتبر شرکتی ",
+    "گل": "عقب"
+  },
+  {
+    "SIZE ": "295/80R22.5",
+    "BRAND ": "LANGIVATOR",
+    "برند ": "لنگیواتور ",
+    "لینک عکس": "https://drive.google.com/file/d/1_wQsftZl99tWSBNirKZeTcMmuxXvV0wY/view?usp=sharing",
+    "توضیحات عکس": "لنگیواتور \n  گل جلو ساخت چین ۱۸ لا ، با ۴ سال گارانتی معتبر شرکتی      ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "385/65R22.5",
+    "BRAND ": "FORLANDER",
+    "برند ": "فورلندر ",
+    "لینک عکس": "https://drive.google.com/file/d/1i3bFq9jJHyn-Dwy8-ACvWCGQ4nblJ-c3/view?usp=sharing",
+    "توضیحات عکس": "فورلندر \nساخت کشورچین ۲۴ لا \n \nباگارانتی ۴ساله شرکت ایمن تایر",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "385/65R22.5",
+    "BRAND ": "yartu ",
+    "برند ": "یارتو ",
+    "لینک عکس": "https://drive.google.com/file/d/1mquFWLrHZMhc7NZ-sTFc3oI05todkV46/view?usp=sharing",
+    "توضیحات عکس": "یارتوو متعلق به کمپانی زدسی رابر\nساخت کشورچین ۲۴ لا  با گارانتی ۴ ساله شرکت ایمن تایر زاگرس ",
+    "گل": "جلو"
   },
   {
     "SIZE ": "385/65R22.5",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
     "لینک عکس": "https://drive.google.com/file/d/1kF5YR5vmanhQOVt9hLowZ0PHQ0vkmVu9/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس \nساخت کشورچین ۲۴ لا \n \nباگارانتی ۴ساله شرکت ایمن تایر"
+    "توضیحات عکس": "افی پلاس \nساخت کشورچین ۲۴ لا \n \nباگارانتی ۴ساله شرکت ایمن تایر",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "385/65R22.5",
+    "BRAND ": "TRAZANO",
+    "برند ": "ترازانو ",
+    "لینک عکس": "https://drive.google.com/file/d/1qgmgOmWNgCYuMmkBdj_f-fDrE4501D7k/view?usp=sharing",
+    "توضیحات عکس": "ترازانو متعلق به کمپانی زدسی رابر\nساخت کشورچین ۲۴ لا   با گارانتی ۴ ساله شرکت ایمن تایر زاگرس \n",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "385/65R22.5",
+    "BRAND ": "ROADBOSS",
+    "برند ": "رودباس ",
+    "لینک عکس": "https://drive.google.com/file/d/1OJN4xpHgfxaZGlt6LaE2Rk7u5cKzUe7o/view?usp=sharing",
+    "توضیحات عکس": "رودباس \n\nساخت کشورچین \n۲۰ لا فوق العاده با کیفیت \nباگارانتی ۴ساله شرکت ایمن تایر",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "235/75R17/5",
+    "BRAND ": "ORNET ",
+    "برند ": "ارونت ",
+    "لینک عکس": "https://drive.google.com/file/d/1kwjBE4eloUhhJLPCa95aAhoaDblca8YI/view?usp=sharing",
+    "توضیحات عکس": "اورنت گل جلو \nساخت کشورچین \nباگارانتی ۴ساله شرکت ایمن تایر زاگرس ۱۶لا",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "235/75R17/5",
+    "BRAND ": "yartu ",
+    "برند ": "یارتو ",
+    "لینک عکس": "https://drive.google.com/file/d/1fwZV6I6nd594xutj1sZaIhDzBjwicSyJ/view?usp=sharing",
+    "توضیحات عکس": "یارتوو گل جلو ( ۱۶ لا  ) \nزد سی رابر \nساخت کشور چین    \nباگارانتی ۴ساله شرکت ایمن تایر زاگرس",
+    "گل": "جلو"
   },
   {
     "SIZE ": "235/75R17/5",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
-    "لینک عکس": "https://drive.google.com/file/d/1hQfvRYSKRxtufAW8OBC3qkv1TrAjgRDT/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس   گل جلو ( ۱۶ لا ) \nساخت کشور چین    \nباگارانتی ۴ساله شرکت ایمن تایر"
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1hQfvRYSKRxtufAW8OBC3qkv1TrAjgRDT\/view?usp=sharing",
+    "توضیحات عکس": "افی پلاس   گل جلو ( ۱۶ لا ) \nساخت کشور چین    \nباگارانتی ۴ساله شرکت ایمن تایر",
+    "گل": "جلو"
   },
   {
-    "SIZE ": "235/75R17/5",
-    "BRAND ": "grandstone ",
-    "برند ": "گرندستون ",
-    "لینک عکس": "https://drive.google.com/file/d/15gT7IMUMi3KnKAxoR3l_tBSpUtTt8mZf/view?usp=sharing",
-    "توضیحات عکس": "گرندستون گل عقب \n۱۸ لا \nبا کارت طلایی گارانتی ۵ ساله که هنگام خرید از فروشگاه دریافت میکنید"
+    "SIZE ": "235\/75R17\/5",
+    "BRAND ": "ARDUZA ",
+    "برند ": "آردوزا ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1hgq9uslvo0De4MAfrW_hh1XWgMx1Gcug\/view?usp=sharing",
+    "توضیحات عکس": "آردوزا  گل جلو \nساخت کشورچین \nباگارانتی ۴ساله شرکت ایمن تایر زاگرس ",
+    "گل": "جلو"
   },
   {
-    "SIZE ": "235/75R17/5",
-    "BRAND ": "grandstone ",
-    "برند ": "گرندستون ",
-    "لینک عکس": "https://drive.google.com/file/d/1bkfN4rn3qGuaA82Es_6NvrZPQj45IC-o/view?usp=sharing",
-    "توضیحات عکس": "گرندستون گل جلو \nبا کارت طلایی گارانتی ۵ ساله که هنگام خرید از فروشگاه دریافت میکنید"
+    "SIZE ": "235\/75R17\/5",
+    "BRAND ": "TRAZANO",
+    "برند ": "ترازانو ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1PQ0We7K_Stb5MyRfJKSI0ylu78PQKzWL\/view?usp=sharing",
+    "توضیحات عکس": "ترازانو متعلق به کمپانی زدسی\nساخت کشورچین \nباگارانتی ۴ساله شرکت ایمن تایر زاگرس ۱۶لا",
+    "گل": "جلو"
   },
   {
-    "SIZE ": "215/75R17/5",
+    "SIZE ": "235\/75R17\/5",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
-    "لینک عکس": "https://drive.google.com/file/d/1ex_6f8sVrHM-yrGMAhF8nKDuxEVYGWH6/view?usp=sharing",
-    "توضیحات عکس": "گرندستون 18 لایه ساخت کشور چین با گارانتی 4 ساله"
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/15gT7IMUMi3KnKAxoR3l_tBSpUtTt8mZf\/view?usp=sharing",
+    "توضیحات عکس": "گرندستون گل عقب \n۱۸ لا \nبا کارت طلایی گارانتی ۵ ساله که هنگام خرید از فروشگاه دریافت میکنید",
+    "گل": "عقب"
   },
   {
-    "SIZE ": "9/5R17.5",
+    "SIZE ": "235\/75R17\/5",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
-    "لینک عکس": "https://drive.google.com/file/d/1fHH2h2fC2CUKxqd0EC_tbm3PAgwNmWl5/view?usp=sharing",
-    "توضیحات عکس": "گرندستون سیمی ساخت کشورچین ۱۸ لا سوپر\nدارای گارانتی چهار ساله شرکت ایمن تایرزاگرس "
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1bkfN4rn3qGuaA82Es_6NvrZPQj45IC-o\/view?usp=sharing",
+    "توضیحات عکس": "گرندستون گل جلو \nبا کارت طلایی گارانتی ۵ ساله که هنگام خرید از فروشگاه دریافت میکنید",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "235\/75R17\/5",
+    "BRAND ": "CHE AT",
+    "برند ": "چ آت ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1FD2kK3iyMwOhbSLqlSkaAxNEYnH3jWAy\/view?usp=sharing",
+    "توضیحات عکس": "چ آ ت  گل جلو ( ۱۶ لا ) \nساخت کشور هندوستان   \nباگارانتی ۴ساله شرکت ایمن تایر زاگرس",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315\/70R22.5",
+    "BRAND ": "DOUBELCOIN",
+    "برند ": "دبل کویین",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1kJ8fpbQ5a5lC1vd0x7fyYhoNDMhntN-Q\/view?usp=sharing",
+    "توضیحات عکس": "دبل کویین  گل جلو از بهترین برندهای موجوددرچین وایران باعرض ۲۷سانتیمتر  باگارانتی ۴ساله ",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "315\/70R22.5",
+    "BRAND ": "TRAZANO",
+    "برند ": "ترازانو ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1JPFwW7_H36tCWMKCfahTN0UdxBh1QY2J\/view?usp=sharing",
+    "توضیحات عکس": "ترازاتو گل عقب ( تولید شرکت زد سی رابر ) از بهترین برندهای موجوددرچین وایران باعرض ۲۷سانتیمتر ۲۰ لا\n\n باگارانتی ۴ساله شرکت ایمن طایر زاگرس ",
+    "گل": "عقب"
+  },
+  {
+    "SIZE ": "215\/75R17\/5",
+    "BRAND ": "grandstone ",
+    "برند ": "گرندستون ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1ex_6f8sVrHM-yrGMAhF8nKDuxEVYGWH6\/view?usp=sharing",
+    "توضیحات عکس": "گرندستون 18 لایه ساخت کشور چین با گارانتی 4 ساله",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "215\/75R17\/5",
+    "BRAND ": "MILVER",
+    "برند ": "میلور ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/10B8H67jiXebsuD7Wi5tJ4y0s7EZqjCj0\/view?usp=sharing",
+    "توضیحات عکس": "میلور  ساخت کشور چین \nبا گارانتی  ۴ساله",
+    "گل": "جلو"
+  },
+  {
+    "SIZE ": "9\/5R17.5",
+    "BRAND ": "grandstone ",
+    "برند ": "گرندستون ",
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1fHH2h2fC2CUKxqd0EC_tbm3PAgwNmWl5\/view?usp=sharing",
+    "توضیحات عکس": "گرندستون سیمی ساخت کشورچین ۱۸ لا سوپر\nدارای گارانتی چهار ساله شرکت ایمن تایرزاگرس ",
+    "گل": "جلو"
   },
   {
     "SIZE ": "8.25R16",
     "BRAND ": "grandstone ",
     "برند ": "گرندستون ",
-    "لینک عکس": "https://drive.google.com/file/d/1n0E5-klJJvZ8VFgg28iqXAsEKkKLN47o/view?usp=sharing",
-    "توضیحات عکس": "گرندستون سیمی ساخت کشورچین همراه با تیوپ و نوار قابل استفاده در همه محورها خیلی مقاوم هم  تراز لاستیک های چهارخط گل عقب \nدارای گارانتی چهارساله شرکت ایمن تایر زاگرس "
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1n0E5-klJJvZ8VFgg28iqXAsEKkKLN47o\/view?usp=sharing",
+    "توضیحات عکس": "گرندستون سیمی ساخت کشورچین همراه با تیوپ و نوار قابل استفاده در همه محورها خیلی مقاوم هم  تراز لاستیک های چهارخط گل عقب \nدارای گارانتی چهارساله شرکت ایمن تایر زاگرس ",
+    "گل": "عقب"
   },
   {
-    "SIZE ": "7/50R16",
+    "SIZE ": "7\/50R16",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
-    "لینک عکس": "https://drive.google.com/file/d/1r6J4AumceJZ6mipygIzFUYYBgBp92OM4/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس ساخت کشورچین همراه با تیوپ ونوار ۱۴لا با عمق و وزن بالا ، قابلیت کارکرد در جاده‌ای آسفالت و خاکی و کوهستانی بهترین برند موجود دردنیا باگارانتی ۵ساله شرکت ایمن تایر زاگرس \n"
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1r6J4AumceJZ6mipygIzFUYYBgBp92OM4\/view?usp=sharing",
+    "توضیحات عکس": "افی پلاس ساخت کشورچین همراه با تیوپ ونوار ۱۴لا با عمق و وزن بالا ، قابلیت کارکرد در جاده‌ای آسفالت و خاکی و کوهستانی بهترین برند موجود دردنیا باگارانتی ۵ساله شرکت ایمن تایر زاگرس \n",
+    "گل": "جلو"
   },
   {
     "SIZE ": "700R16",
     "BRAND ": "EFIIPLUS",
     "برند ": "افی پلاس ",
-    "لینک عکس": "https://drive.google.com/file/d/1pdtHw0CXlhQvpT74XEc67nlCCKdCCmjn/view?usp=sharing",
-    "توضیحات عکس": "افی پلاس سیمی ۱۴لا \nتیوپلس \nباگارانتی ۴ساله"
+    "لینک عکس": "https:\/\/drive.google.com\/file\/d\/1pdtHw0CXlhQvpT74XEc67nlCCKdCCmjn\/view?usp=sharing",
+    "توضیحات عکس": "افی پلاس سیمی ۱۴لا \nتیوپلس \nباگارانتی ۴ساله",
+    "گل": "جلو"
   }
 ]
 """
@@ -303,28 +574,29 @@ class TireSelectionActivity : AppCompatActivity() {
                 val jsonObject = jsonArray.getJSONObject(i)
 
                 // Extract and trim values. Use .optString to handle missing keys gracefully, though not expected here.
-                // IMPORTANT: Note the space in key names like "SIZE " and "BRAND "
                 val size = jsonObject.optString("SIZE ").trim()
                 val brandPersian = jsonObject.optString("برند ").trim()
                 val imageUrl = jsonObject.optString("لینک عکس").trim()
                 val description = jsonObject.optString("توضیحات عکس").trim().removeSurrounding("\"")
+                val golType = jsonObject.optString("گل").trim() // Extract new 'گل' parameter
 
-                // Only add data if size and brand are not empty
-                if (size.isNotEmpty() && brandPersian.isNotEmpty()) {
-                    // Corrected Google Drive 'view' link to 'download' link conversion
+                // Only add data if size, brand, and golType are not empty
+                if (size.isNotEmpty() && brandPersian.isNotEmpty() && golType.isNotEmpty()) {
                     val convertedImageUrl = if (imageUrl.startsWith("https://drive.google.com/file/d/")) {
                         val id = imageUrl.substringAfterLast("/d/").substringBefore("/view")
                         "https://drive.google.com/uc?export=download&id=$id"
                     } else {
-                        imageUrl // Use as is if not a Google Drive view link (e.g., if it's already a direct link)
+                        imageUrl
                     }
 
+                    // Nested map structure: Size -> Brand -> Gol Type -> List of (Image URL, Description)
                     val brandMap = tireDataMap.getOrPut(size) { mutableMapOf() }
-                    val imageList = brandMap.getOrPut(brandPersian) { mutableListOf() }
+                    val golMap = brandMap.getOrPut(brandPersian) { mutableMapOf() }
+                    val imageList = golMap.getOrPut(golType) { mutableListOf() }
                     imageList.add(Pair(convertedImageUrl, description))
-                    Log.d(TAG, "Added: Size=$size, Brand=$brandPersian, ImageURL=$convertedImageUrl")
+                    Log.d(TAG, "Added: Size=$size, Brand=$brandPersian, Gol=$golType, ImageURL=$convertedImageUrl")
                 } else {
-                    Log.w(TAG, "Skipping empty or malformed JSON entry at index $i: Size='$size', Brand='$brandPersian'")
+                    Log.w(TAG, "Skipping empty or malformed JSON entry at index $i: Size='$size', Brand='$brandPersian', Gol='$golType'")
                 }
             }
         } catch (e: Exception) {
@@ -333,9 +605,9 @@ class TireSelectionActivity : AppCompatActivity() {
     }
 
     /**
-     * Filters the brands spinner based on the currently selected tire size.
+     * Filters the brands and gol types spinners based on the currently selected tire size.
      */
-    private fun filterBrandsForSelectedSize() {
+    private fun filterBrandsAndGolTypes() {
         val availableBrandsForSize = tireDataMap[selectedTireSize]?.keys?.sorted()?.toTypedArray() ?: emptyArray()
         val brandAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, availableBrandsForSize)
         brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -349,18 +621,42 @@ class TireSelectionActivity : AppCompatActivity() {
             selectedTireBrand = ""
         }
         Log.d(TAG, "Brands for size '$selectedTireSize': ${availableBrandsForSize.contentToString()}")
-        Log.d(TAG, "Selected brand after filter: $selectedTireBrand")
+        Log.d(TAG, "Selected brand after size filter: $selectedTireBrand")
+
+        // Now filter Gol Types based on selected size and (newly selected/filtered) brand
+        filterGolTypesForSelectedSizeAndBrand()
     }
 
     /**
-     * Updates the displayed tire images and description based on selected size and brand.
+     * Filters the gol types spinner based on the currently selected tire size and brand.
+     */
+    private fun filterGolTypesForSelectedSizeAndBrand() {
+        val availableGolTypes = tireDataMap[selectedTireSize]?.get(selectedTireBrand)?.keys?.sorted()?.toTypedArray() ?: emptyArray()
+        val golTypeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, availableGolTypes)
+        golTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerGolType.adapter = golTypeAdapter
+
+        // If the previously selected gol type is not available for the new size/brand, select the first available
+        if (availableGolTypes.isNotEmpty() && !availableGolTypes.contains(selectedGolType)) {
+            selectedGolType = availableGolTypes[0]
+            spinnerGolType.setSelection(0)
+        } else if (availableGolTypes.isEmpty()) {
+            selectedGolType = ""
+        }
+        Log.d(TAG, "Gol Types for size '$selectedTireSize' and brand '$selectedTireBrand': ${availableGolTypes.contentToString()}")
+        Log.d(TAG, "Selected Gol Type after filter: $selectedGolType")
+    }
+
+
+    /**
+     * Updates the displayed tire images and description based on selected size, brand, and gol type.
      */
     private fun updateTireDisplay() {
         // Hide previous notification when selections change
-        tvContactUsTitle.visibility = View.GONE // Hide title too
-        llContactNumbersContainer.visibility = View.GONE // Hide contact container
+        tvContactUsTitle.visibility = View.GONE
+        llContactNumbersContainer.visibility = View.GONE
 
-        val imagesAndDescriptions = tireDataMap[selectedTireSize]?.get(selectedTireBrand)
+        val imagesAndDescriptions = tireDataMap[selectedTireSize]?.get(selectedTireBrand)?.get(selectedGolType)
 
         val imagesToDisplay = mutableListOf<String>()
         var descriptionToDisplay = getString(R.string.no_description_available)
@@ -368,12 +664,12 @@ class TireSelectionActivity : AppCompatActivity() {
         if (imagesAndDescriptions != null && imagesAndDescriptions.isNotEmpty()) {
             imagesToDisplay.addAll(imagesAndDescriptions.map { it.first }) // Extract URLs
             descriptionToDisplay = imagesAndDescriptions[0].second // Get description from the first item
-            Log.d(TAG, "Displaying ${imagesToDisplay.size} images for $selectedTireBrand ($selectedTireSize). Description: $descriptionToDisplay")
+            Log.d(TAG, "Displaying ${imagesToDisplay.size} images for $selectedTireBrand ($selectedTireSize, $selectedGolType). Description: $descriptionToDisplay")
         } else {
-            // If no specific data for the size/brand, use the default placeholder image
+            // If no specific data for the size/brand/golType, use the default placeholder image
             imagesToDisplay.add(defaultNoImage)
             descriptionToDisplay = getString(R.string.no_description_available)
-            Log.d(TAG, "No specific data for $selectedTireBrand ($selectedTireSize), showing default image.")
+            Log.d(TAG, "No specific data for $selectedTireBrand ($selectedTireSize, $selectedGolType), showing default image.")
         }
 
         // Update the RecyclerView adapter with the new list of images
@@ -397,21 +693,22 @@ class TireSelectionActivity : AppCompatActivity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    bottomMargin = resources.getDimensionPixelSize(R.dimen.contact_item_margin_bottom) // Add some margin
+                    bottomMargin = resources.getDimensionPixelSize(R.dimen.contact_item_margin_bottom)
                 }
                 text = "${contact.name}: ${contact.phoneNumber}"
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-                setTextColor(resources.getColor(R.color.md_theme_primary, theme)) // Use primary color for links
+                setTextColor(resources.getColor(R.color.md_theme_primary, theme))
+                textDirection = View.TEXT_DIRECTION_RTL
+                gravity = View.TEXT_ALIGNMENT_VIEW_END
                 setPadding(
                     resources.getDimensionPixelSize(R.dimen.contact_item_padding_horizontal),
                     resources.getDimensionPixelSize(R.dimen.contact_item_padding_vertical),
                     resources.getDimensionPixelSize(R.dimen.contact_item_padding_horizontal),
                     resources.getDimensionPixelSize(R.dimen.contact_item_padding_vertical)
                 )
-                setBackgroundResource(R.drawable.rounded_edittext) // Use existing rounded background
-                gravity = View.TEXT_ALIGNMENT_CENTER // Center the text
-                isClickable = true // Make it explicitly clickable
-                isFocusable = true // Make it explicitly focusable
+                setBackgroundResource(R.drawable.rounded_edittext)
+                isClickable = true
+                isFocusable = true
                 setOnClickListener {
                     val dialIntent = Intent(Intent.ACTION_DIAL).apply {
                         data = Uri.parse("tel:${contact.phoneNumber}")
@@ -420,7 +717,7 @@ class TireSelectionActivity : AppCompatActivity() {
                         startActivity(dialIntent)
                     } else {
                         Log.w(TAG, "No app to handle dial intent for ${contact.phoneNumber}")
-                        Toast.makeText(this@TireSelectionActivity, "No app to make calls found.", Toast.LENGTH_SHORT).show() // Show toast
+                        Toast.makeText(this@TireSelectionActivity, "No app to make calls found.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

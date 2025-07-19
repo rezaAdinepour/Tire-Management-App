@@ -28,8 +28,10 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="24dp" />
+                android:layout_gravity="end"
+                android:layout_marginBottom="24dp"
+                android:textDirection="rtl"
+                android:gravity="end" />
 
             <!-- Size and Brand Selection -->
             <TextView
@@ -40,7 +42,10 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:textDirection="rtl"
+                android:gravity="end"
+                android:layout_gravity="end" />
 
             <Spinner
                 android:id="@+id/spinner_tire_size"
@@ -51,7 +56,9 @@
                 android:padding="12dp"
                 android:layout_marginBottom="12dp"
                 android:popupBackground="?attr/colorSurface"
-                android:textColor="?attr/colorOnSurface" />
+                android:textColor="?attr/colorOnSurface"
+                android:textDirection="rtl"
+                android:gravity="end" />
 
             <Spinner
                 android:id="@+id/spinner_tire_brand"
@@ -60,9 +67,25 @@
                 android:hint="@string/select_brand_hint"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
+                android:layout_marginBottom="12dp"
+                android:popupBackground="?attr/colorSurface"
+                android:textColor="?attr/colorOnSurface"
+                android:textDirection="rtl"
+                android:gravity="end" />
+
+            <!-- New Spinner for Gol Type -->
+            <Spinner
+                android:id="@+id/spinner_gol_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/select_gol_type_hint"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
                 android:layout_marginBottom="24dp"
                 android:popupBackground="?attr/colorSurface"
-                android:textColor="?attr/colorOnSurface" />
+                android:textColor="?attr/colorOnSurface"
+                android:textDirection="rtl"
+                android:gravity="end" />
 
             <!-- Tire Images Section (RecyclerView) -->
             <TextView
@@ -73,7 +96,10 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:textDirection="rtl"
+                android:gravity="end"
+                android:layout_gravity="end" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_tire_images"
@@ -95,7 +121,10 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:textDirection="rtl"
+                android:gravity="end"
+                android:layout_gravity="end" />
 
             <TextView
                 android:id="@+id/tv_tire_description"
@@ -106,6 +135,8 @@
                 android:textSize="16sp"
                 android:textColor="?attr/colorOnSurface"
                 android:layout_marginBottom="24dp"
+                android:textDirection="rtl"
+                android:gravity="end"
                 tools:text="این یک توضیحات نمونه برای لاستیک است." />
 
             <!-- Buy Button -->
@@ -118,7 +149,8 @@
                 android:background="@drawable/rounded_button"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="18sp"
-                android:layout_marginBottom="16dp" />
+                android:textDirection="rtl"
+                android:gravity="center" />
 
             <!-- Contact Information Section -->
             <TextView
@@ -130,7 +162,10 @@
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnBackground"
                 android:layout_marginBottom="8dp"
-                android:visibility="gone"/> <!-- Initially hidden -->
+                android:visibility="gone"
+                android:textDirection="rtl"
+                android:gravity="end"
+                android:layout_gravity="end" />
 
             <LinearLayout
                 android:id="@+id/ll_contact_numbers_container"
@@ -140,7 +175,7 @@
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
-                android:visibility="gone"> <!-- Initially hidden -->
+                android:visibility="gone">
                 <!-- Contact TextViews will be added here dynamically -->
             </LinearLayout>
 
